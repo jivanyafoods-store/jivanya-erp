@@ -1922,28 +1922,12 @@
         btn.disabled = true;
       }
 
-      // 1. Direct Supabase Storage
-      try {
-        if (supabaseClient) {
-          await supabaseClient.from('orders').insert([{
-            order_id: orderId,
-            customer_name: name,
-            customer_phone: phone,
-            shipping_address: `${address}, ${city}`,
-            pincode: pincode,
-            items: itemsArray,
-            subtotal: subtotalVal,
-            discount: state.discountAmount,
-            shipping_fee: shippingVal,
-            total_amount: grandTotalVal,
-            payment_method: 'COD/UPI',
-            order_status: 'Received'
-          }]);
-        }
-      } catch (dbErr) {
-        console.warn("Supabase background save notice:", dbErr);
-      }
-
+      // 1. ERP Backend Integration (Handles Supabase, Stock, Ledger)
+   try {
+     await submitTitanOrder(name, phone, city, itemsArray);
+   } catch (erpErr) {
+     console.warn("ERP Sync Notice:", erpErr);
+   }
       // 2. Google Sheets Backup Sync
       const payload = new URLSearchParams();
       payload.append("action", "order");
