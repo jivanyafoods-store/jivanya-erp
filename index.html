@@ -2385,13 +2385,13 @@ async function submitTitanOrder(customerName, customerPhone, customerCity, cartI
       state: "UP"
     },
     items: cartItems.map(item => ({
-      sku: item.product_id,
+      sku: item.sku || item.product_id,
       quantity: Number(item.qty || 1)
     }))
   };
 
   try {
-    const res = await fetch(`${TITAN_ERP_API}/api/v1/orders/checkout`, {
+    const res = await fetch(`${TITAN_ERP_API}/orders/checkout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -2409,6 +2409,6 @@ async function submitTitanOrder(customerName, customerPhone, customerCity, cartI
   }
 }
 </script>
-<!-- ============================================================== -->  
+<!-- ============================================================== -->
 </body>
 </html>
