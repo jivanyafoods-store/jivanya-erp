@@ -2368,7 +2368,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     window.addEventListener('load', startJivanyaStore, { once: true });
   </script>
 
-  <!-- ================= TITAN ERP CHECKOUT BRIDGE ================= -->
+<!-- ================= TITAN ERP CHECKOUT BRIDGE ================= -->
 <script>
 // Live Render Backend URL
 const TITAN_ERP_API = "https://shreeju-erp-api.onrender.com";
@@ -2385,13 +2385,13 @@ async function submitTitanOrder(customerName, customerPhone, customerCity, cartI
       state: "UP"
     },
     items: cartItems.map(item => ({
-      sku: item.product_id, // <-- Yahan gadbadi thi, ise theek kar diya gaya hai
+      sku: item.product_id,
       quantity: Number(item.qty || 1)
     }))
   };
 
   try {
-    const res = await fetch(`${TITAN_ERP_API}/orders/checkout`, {
+    const res = await fetch(`${TITAN_ERP_API}/api/v1/orders/checkout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -2409,7 +2409,6 @@ async function submitTitanOrder(customerName, customerPhone, customerCity, cartI
   }
 }
 </script>
-<!-- ============================================================== -->
-  
+<!-- ============================================================== -->  
 </body>
 </html>
