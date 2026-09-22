@@ -995,18 +995,53 @@
       setupAIExitIntent();
     }
 
-    function fetchFastCSV(url, cacheSeconds = 30) {
-      return new Promise((resolve) => {
+    async function fetchFastCSV(url, cacheSeconds = 30) {
+      // Native fetch + Papa fallback. This avoids an endless loading screen
+      // when the PapaParse CDN fails or a published Sheet temporarily errors.
+      try {
         const cacheKey = Math.floor(Date.now() / (cacheSeconds * 1000));
         const fastUrl = url + (url.includes('?') ? '&' : '?') + '_v=' + cacheKey;
-        Papa.parse(fastUrl, {
-          download: true,
-          header: true,
-          skipEmptyLines: true,
-          complete: (results) => resolve(results.data || []),
-          error: () => resolve([])
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 10000);
+        const response = await fetch(fastUrl, {
+          method: 'GET',
+          cache: 'no-store',
+          signal: controller.signal
         });
-      });
+        clearTimeout(timer);
+        if (!response.ok) throw new Error(`CSV HTTP ${response.status}`);
+        const csvText = await response.text();
+
+        if (window.Papa && typeof Papa.parse === 'function') {
+          const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+          return parsed.data || [];
+        }
+
+        // Minimal CSV parser fallback for simple Google Sheet CSV data.
+        const rows = [];
+        let row = [], cell = '', quoted = false;
+        for (let i = 0; i < csvText.length; i++) {
+          const ch = csvText[i], next = csvText[i + 1];
+          if (ch === '"' && quoted && next === '"') { cell += '"'; i++; continue; }
+          if (ch === '"') { quoted = !quoted; continue; }
+          if (ch === ',' && !quoted) { row.push(cell); cell = ''; continue; }
+          if ((ch === '\n' || ch === '\r') && !quoted) {
+            if (ch === '\r' && next === '\n') i++;
+            row.push(cell); cell = '';
+            if (row.some(v => String(v).trim() !== '')) rows.push(row);
+            row = [];
+            continue;
+          }
+          cell += ch;
+        }
+        if (cell.length || row.length) { row.push(cell); rows.push(row); }
+        if (!rows.length) return [];
+        const headers = rows.shift().map(h => String(h).trim());
+        return rows.map(r => Object.fromEntries(headers.map((h, i) => [h, r[i] ?? ''])));
+      } catch (err) {
+        console.warn('CSV load failed:', url, err);
+        return [];
+      }
     }
 
     function saveCustomerProfile() {
@@ -1302,7 +1337,11 @@
 
     function renderCatalog(customQuery = "") {
       const container = document.getElementById('productsGrid');
-      if (!state.products.length) return;
+      if (!container) return;
+      if (!state.products.length) {
+        container.innerHTML = `<div class="text-center py-12 bg-white rounded-xl border border-gray-200"><p class="text-sm font-semibold text-gray-700">Products are loading…</p><p class="text-xs text-gray-500 mt-1">If this message stays for more than a few seconds, please refresh once.</p></div>`;
+        return;
+      }
 
       const query = customQuery || (document.getElementById('searchInput')?.value || '').toLowerCase();
 
@@ -2308,7 +2347,22 @@
       }
     });
 
-    window.onload = init;
+    let __jivanyaInitialized = false;
+    function startJivanyaStore() {
+      if (__jivanyaInitialized) return;
+      __jivanyaInitialized = true;
+      try { init(); } catch (err) {
+        console.error('Jivanya startup error:', err);
+        const grid = document.getElementById('productsGrid');
+        if (grid) grid.innerHTML = `<div class="text-center py-12 bg-white rounded-xl border border-red-200"><p class="text-sm font-semibold text-red-700">Store data could not be loaded.</p><p class="text-xs text-gray-500 mt-1">Please refresh once. If the problem continues, the published Google Sheet needs to be checked.</p></div>`;
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startJivanyaStore, { once: true });
+    } else {
+      startJivanyaStore();
+    }
+    window.addEventListener('load', startJivanyaStore, { once: true });
   </script>
 
   <!-- ================= TITAN ERP CHECKOUT BRIDGE ================= -->
