@@ -1741,3 +1741,9 @@ def root():
         "paid_ai_required": False,
         "time": now_iso(),
     }
+@app.post("/orders/checkout")
+@app.post("/api/v1/orders/checkout")
+def api_checkout(payload: CheckoutRequest):
+    # Website ya storefront se aane wale orders ko process karega
+    order = place_order(payload, payload.channel or "WEBSITE")
+    return order
