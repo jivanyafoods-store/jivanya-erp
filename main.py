@@ -71,8 +71,7 @@ app.add_middleware(
     allow_headers=["*"] ,
 )
 
-PUBLIC_API_PATHS = {"/api/v1/auth/login", "/api/v1/health", "/api/v1/ready"}
-
+PUBLIC_API_PATHS = {"/api/v1/auth/login", "/api/v1/health", "/api/v1/ready", "/api/v1/orders/checkout"}
 @app.middleware("http")
 async def require_bearer_for_api(request: Request, call_next):
     # Health/login remain public. All business API calls require the Supabase Auth access token.
