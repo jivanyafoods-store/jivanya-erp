@@ -861,7 +861,7 @@
          onerror="this.style.display='none'" />
     <div class="flex flex-col text-left leading-tight whitespace-nowrap">
       <span class="text-[10px] font-bold text-gray-900 tracking-tight">FSSAI Lic. No. 22725884000388</span>
-      <span class="text-[9px] font-semibold text-emerald-900" id="badgeFssaiNo">Lic. No: 12724999000123</span>
+      <span class="text-[9px] font-semibold text-emerald-900" id="badgeFssaiNo">Lic. No: 22725884000388</span>
     </div>
   </div>
 
@@ -892,10 +892,10 @@
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
     const SHEET_URLS = {
-      products: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTmad8UlXjp8aWv_PwLLn7YeoInoQGlo5X3E75bkgyij9yFVbR1DsB7Qy5BVHSrsHyFFSafMnyQSo00/pub?gid=355319400&single=true&output=csv",
-      settings: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTmad8UlXjp8aWv_PwLLn7YeoInoQGlo5X3E75bkgyij9yFVbR1DsB7Qy5BVHSrsHyFFSafMnyQSo00/pub?gid=374168800&single=true&output=csv",
-      categories: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTmad8UlXjp8aWv_PwLLn7YeoInoQGlo5X3E75bkgyij9yFVbR1DsB7Qy5BVHSrsHyFFSafMnyQSo00/pub?gid=868858486&single=true&output=csv",
-      reviews: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTmad8UlXjp8aWv_PwLLn7YeoInoQGlo5X3E75bkgyij9yFVbR1DsB7Qy5BVHSrsHyFFSafMnyQSo00/pub?gid=1963635753&single=true&output=csv",
+      products: "https://docs.google.com/spreadsheets/d/1FUJc1BqBHQPKTe0opYh8kgnzPg8wVYftzBmpHxTJpMw/export?format=csv&gid=355319400&single=true&output=csv",
+      settings: "https://docs.google.com/spreadsheets/d/1FUJc1BqBHQPKTe0opYh8kgnzPg8wVYftzBmpHxTJpMw/export?format=csv&gid=374168800&single=true&output=csv",
+      categories: "https://docs.google.com/spreadsheets/d/1FUJc1BqBHQPKTe0opYh8kgnzPg8wVYftzBmpHxTJpMw/export?format=csv&gid=868858486&single=true&output=csv",
+      reviews: "https://docs.google.com/spreadsheets/d/1FUJc1BqBHQPKTe0opYh8kgnzPg8wVYftzBmpHxTJpMw/export?format=csv&gid=1963635753&single=true&output=csv",
       orderScript: "https://script.google.com/macros/s/AKfycybxcOpXhMtNT8ikvynaLx53elClEJOAteol-CXknxD__yioWj42NfTm0vxJgbXHXSlO/exec"
     };
 
@@ -974,6 +974,9 @@
         state.products = rows.filter(r => (r.InStock || "YES").toUpperCase() !== "NO");
         renderCatalog();
         evaluateAICrossSell();
+      }).catch(err => {
+        console.error('Products initialization failed:', err);
+        renderCatalog();
       });
 
       fetchFastCSV(SHEET_URLS.categories, 300).then(rows => {
