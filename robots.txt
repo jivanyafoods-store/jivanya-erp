@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jivanyafoods-store.github.io/jivanyafoods/sitemap.xml

@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>Shreeju ERP • Operations Cockpit</title>
+  <style>
+    :root {
+      --bg:#f4f7f4; --panel:#ffffff; --panel-2:#f8faf8; --ink:#17201a; --muted:#647068;
+      --line:#dfe7e1; --brand:#1f6b45; --brand-2:#2f8b5c; --brand-soft:#e9f5ee;
+      --warn:#a36007; --warn-soft:#fff6df; --danger:#a93535; --danger-soft:#fff0f0;
+      --info:#315d8a; --info-soft:#eef5fc; --shadow:0 10px 30px rgba(21,45,31,.08);
+      --radius:18px; --sidebar:270px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+    button,input,select,textarea{font:inherit} button{cursor:pointer} a{color:inherit}
+    .hidden{display:none!important}.muted{color:var(--muted)}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.small{font-size:12px}.nowrap{white-space:nowrap}
+    .app{min-height:100vh}.login-wrap{min-height:100vh;display:grid;place-items:center;padding:22px;background:radial-gradient(circle at top left,#eff9f2 0,#f4f7f4 42%,#edf1ee 100%)}
+    .login-card{width:min(430px,100%);background:var(--panel);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:32px}
+    .logo{display:flex;align-items:center;gap:12px}.logo-mark{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),#78b98e);color:white;font-weight:900;letter-spacing:.5px}.logo h1{font-size:18px;margin:0}.logo p{margin:2px 0 0;color:var(--muted);font-size:12px}
+    .field{display:grid;gap:7px;margin:14px 0}.field label{font-size:12px;font-weight:700;color:#4d5951}.field input,.field select,.field textarea{width:100%;border:1px solid #cfd9d2;background:#fff;border-radius:12px;padding:11px 12px;outline:none;transition:.18s}.field input:focus,.field select:focus,.field textarea:focus{border-color:#75a98a;box-shadow:0 0 0 3px rgba(47,139,92,.12)}.field textarea{min-height:90px;resize:vertical}
+    .btn{border:0;border-radius:12px;padding:10px 14px;font-weight:750;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.18s}.btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}.btn-primary{background:var(--brand);color:#fff}.btn-soft{background:var(--brand-soft);color:var(--brand)}.btn-light{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn-danger{background:var(--danger);color:#fff}.btn-warn{background:var(--warn-soft);color:#815006}.btn-sm{padding:7px 10px;border-radius:10px;font-size:12px}.btn-block{width:100%}
+    .error{padding:10px 12px;border-radius:12px;background:var(--danger-soft);color:var(--danger);font-size:12px}.success{padding:10px 12px;border-radius:12px;background:var(--brand-soft);color:var(--brand);font-size:12px}.info{padding:10px 12px;border-radius:12px;background:var(--info-soft);color:var(--info);font-size:12px}
+    .shell{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh}.sidebar{position:sticky;top:0;height:100vh;background:#153d2a;color:#edf7f0;padding:20px 14px;overflow:auto}.sidebar .logo{padding:0 8px 18px;border-bottom:1px solid rgba(255,255,255,.12)}.sidebar .logo-mark{background:#f7c65c;color:#2f452f}.sidebar .logo p{color:#b8cfbf}.nav-group{margin-top:18px}.nav-title{font-size:10px;text-transform:uppercase;letter-spacing:.13em;color:#94b49f;font-weight:800;padding:0 10px 7px}.nav-btn{width:100%;border:0;background:transparent;color:#dbeadf;border-radius:11px;padding:9px 10px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:3px 0;font-weight:650}.nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,.11);color:#fff}.nav-btn .left{display:flex;gap:10px;align-items:center}.nav-btn .ico{width:22px;text-align:center}.badge-mini{font-size:10px;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,.12)}
+    .main{min-width:0}.topbar{position:sticky;top:0;z-index:20;background:rgba(244,247,244,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:12px 18px;display:flex;align-items:center;gap:12px;justify-content:space-between}.top-left,.top-right{display:flex;gap:10px;align-items:center}.mobile-menu{display:none}.search{min-width:280px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:9px 12px}.workspace-switch{display:flex;gap:5px;background:#e7ede9;border-radius:12px;padding:4px}.workspace-switch button{border:0;background:transparent;border-radius:9px;padding:7px 10px;font-weight:750;color:#56625a}.workspace-switch button.active{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.07);color:var(--brand)}
+    .avatar{width:34px;height:34px;border-radius:50%;background:#dce9e0;display:grid;place-items:center;font-weight:900;color:var(--brand)}
+    .content{padding:20px}.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:16px}.page-head h2{margin:0;font-size:22px}.page-head p{margin:4px 0 0;color:var(--muted)}
+    .grid{display:grid;gap:14px}.stats{grid-template-columns:repeat(5,minmax(0,1fr))}.two{grid-template-columns:1.15fr .85fr}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 2px 10px rgba(19,44,29,.035)}.card-pad{padding:16px}.card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.card-title h3{margin:0;font-size:15px}.metric{padding:15px}.metric .label{color:var(--muted);font-size:12px;font-weight:700}.metric .value{font-size:23px;font-weight:900;margin-top:5px;letter-spacing:-.02em}.metric .delta{font-size:11px;margin-top:4px;color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}.pill-green{background:var(--brand-soft);color:var(--brand)}.pill-yellow{background:var(--warn-soft);color:var(--warn)}.pill-red{background:var(--danger-soft);color:var(--danger)}.pill-blue{background:var(--info-soft);color:var(--info)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.toolbar input,.toolbar select{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 10px;min-width:150px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}.table{width:100%;border-collapse:collapse;min-width:760px}.table th,.table td{padding:10px 12px;border-bottom:1px solid #edf1ee;text-align:left;vertical-align:middle}.table th{background:#f8faf8;color:#5c685f;font-size:11px;text-transform:uppercase;letter-spacing:.04em}.table tr:last-child td{border-bottom:0}.table .actions{display:flex;gap:6px;flex-wrap:wrap}.empty{padding:30px;text-align:center;color:var(--muted)}
+    .kpi-list{display:grid;gap:8px}.kpi-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:11px;background:var(--panel-2)}.kpi-row b{font-size:13px}
+    .progress{height:8px;background:#edf2ee;border-radius:999px;overflow:hidden}.progress>span{display:block;height:100%;background:var(--brand);border-radius:inherit}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.form-grid .span2{grid-column:1/-1}
+    .tabs .tab-panel{display:none}.tabs .tab-panel.active{display:block}.section-gap{display:grid;gap:14px}
+    .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:#8b9790}.status-dot.ok{background:#3b9b64}.status-dot.warn{background:#d79b34}.status-dot.bad{background:#cf4f4f}
+    .timeline{display:grid;gap:10px}.timeline-item{display:grid;grid-template-columns:12px 1fr;gap:10px}.timeline-line{position:relative}.timeline-line:before{content:"";position:absolute;left:5px;top:12px;bottom:-13px;width:1px;background:#dfe7e1}.timeline-item:last-child .timeline-line:before{display:none}.timeline-line:after{content:"";position:absolute;left:1px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--brand)}
+    .modal{position:fixed;inset:0;z-index:50;background:rgba(8,18,12,.55);display:grid;place-items:center;padding:18px}.modal-card{width:min(760px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;box-shadow:0 24px 80px rgba(0,0,0,.24)}.modal-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.modal-body{padding:18px}.modal-foot{padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+    .toast-wrap{position:fixed;right:18px;bottom:18px;z-index:80;display:grid;gap:8px;width:min(360px,calc(100vw - 36px))}.toast{background:#fff;border:1px solid var(--line);border-left:4px solid var(--brand);padding:12px 14px;border-radius:12px;box-shadow:var(--shadow)}.toast.error-toast{border-left-color:var(--danger)}
+    .warehouse-mode .sidebar{display:none}.warehouse-mode .shell{grid-template-columns:1fr}.warehouse-mode .content{max-width:760px;margin:auto}.warehouse-mode .topbar{padding:10px}.warehouse-mode .mobile-menu{display:none!important}
+    @media(max-width:1180px){.stats{grid-template-columns:repeat(3,1fr)}.four{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:900px){.shell{grid-template-columns:1fr}.sidebar{position:fixed;left:-290px;z-index:60;width:270px;transition:.2s}.sidebar.open{left:0}.mobile-menu{display:inline-flex}.search{display:none}.two,.three{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.content{padding:14px}.topbar{padding:10px 12px}.page-head{flex-direction:column}.workspace-switch button{padding:6px 8px;font-size:11px}}
+    @media(max-width:560px){.stats,.four,.form-grid,.split{grid-template-columns:1fr}.metric .value{font-size:21px}.workspace-switch{max-width:100%;overflow:auto}.top-right .user-meta{display:none}.content{padding:10px}.card-pad{padding:13px}.page-head h2{font-size:19px}.toolbar{align-items:stretch}.toolbar input,.toolbar select,.toolbar .btn{width:100%}.topbar{align-items:flex-start}.top-left{min-width:0}.top-right{flex-shrink:0}}
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+  <section id="loginSection" class="login-wrap">
+    <div class="login-card">
+      <div class="logo"><div class="logo-mark">SF</div><div><h1>Shreeju ERP</h1><p>Jivanya Foods + Shreeju Foods</p></div></div>
+      <div style="margin:26px 0 18px"><h2 style="margin:0 0 6px">Secure sign in</h2><div class="muted">Use your ERP account. Passwords are never stored in this HTML file.</div></div>
+      <form id="loginForm">
+        <div class="field"><label for="loginUser">Email / Username</label><input id="loginUser" autocomplete="username" required placeholder="you@example.com" /></div>
+        <div class="field"><label for="loginPass">Password</label><input id="loginPass" type="password" autocomplete="current-password" required placeholder="••••••••" /></div>
+        <div id="loginError" class="error hidden"></div>
+        <button class="btn btn-primary btn-block" type="submit" style="margin-top:12px">Sign in</button>
+      </form>
+      <div class="info" style="margin-top:16px">Login is handled securely through Supabase Auth; your ERP password is never stored in this HTML file.</div>
+    </div>
+  </section>
+
+  <section id="dashboardSection" class="hidden">
+    <div class="shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="logo"><div class="logo-mark">SF</div><div><h1>Shreeju ERP</h1><p id="sidebarWorkspace">All Firms</p></div></div>
+        <nav id="mainNav">
+          <div class="nav-group"><div class="nav-title">Command Center</div>
+            <button class="nav-btn active" data-tab="cockpit"><span class="left"><span class="ico">⌂</span>Executive Cockpit</span></button>
+            <button class="nav-btn" data-tab="approvals"><span class="left"><span class="ico">✓</span>Approval Queue</span><span class="badge-mini" id="approvalBadge">0</span></button>
+            <button class="nav-btn" data-tab="notifications"><span class="left"><span class="ico">●</span>Notifications</span><span class="badge-mini" id="notificationBadge">0</span></button>
+          </div>
+          <div class="nav-group"><div class="nav-title">Commerce</div>
+            <button class="nav-btn" data-tab="catalog"><span class="left"><span class="ico">▦</span>Products & Catalog</span></button>
+            <button class="nav-btn" data-tab="b2b"><span class="left"><span class="ico">₹</span>B2B & Pricing</span></button>
+            <button class="nav-btn" data-tab="pos"><span class="left"><span class="ico">▣</span>POS Billing</span></button>
+            <button class="nav-btn" data-tab="marketplaces"><span class="left"><span class="ico">↗</span>Marketplaces</span></button>
+            <button class="nav-btn" data-tab="crm"><span class="left"><span class="ico">♙</span>CRM & Retention</span></button>
+          </div>
+          <div class="nav-group"><div class="nav-title">Operations</div>
+            <button class="nav-btn" data-tab="inventory"><span class="left"><span class="ico">▤</span>Inventory & FEFO</span></button>
+            <button class="nav-btn" data-tab="procurement"><span class="left"><span class="ico">⇣</span>Procurement</span></button>
+            <button class="nav-btn" data-tab="production"><span class="left"><span class="ico">⚙</span>Production & BOM</span></button>
+            <button class="nav-btn" data-tab="logistics"><span class="left"><span class="ico">⇄</span>Logistics / RTO</span></button>
+            <button class="nav-btn" data-tab="warehouse"><span class="left"><span class="ico">▥</span>Warehouse Mobile</span></button>
+          </div>
+          <div class="nav-group"><div class="nav-title">Finance & Compliance</div>
+            <button class="nav-btn" data-tab="finance"><span class="left"><span class="ico">₹</span>Finance & Banking</span></button>
+            <button class="nav-btn" data-tab="gst"><span class="left"><span class="ico">#</span>GST / E-Invoice / E-Way</span></button>
+            <button class="nav-btn" data-tab="compliance"><span class="left"><span class="ico">▧</span>Compliance Vault</span></button>
+          </div>
+          <div class="nav-group"><div class="nav-title">Automation</div>
+            <button class="nav-btn" data-tab="ai"><span class="left"><span class="ico">✦</span>AI Mesh</span></button>
+            <button class="nav-btn" data-tab="seo"><span class="left"><span class="ico">⌕</span>SEO Engine</span></button>
+            <button class="nav-btn" data-tab="system"><span class="left"><span class="ico">⚒</span>System & Audit</span></button>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="top-left">
+            <button id="mobileMenuBtn" class="btn btn-light btn-sm mobile-menu" type="button">☰</button>
+            <div class="workspace-switch" aria-label="Firm filter">
+              <button id="btnFirmAll" class="active" data-firm="ALL">All</button>
+              <button id="btnFirmJiv" data-firm="FIRM-JIVANYA">Jivanya</button>
+              <button id="btnFirmShr" data-firm="FIRM-SHREEJU">Shreeju</button>
+            </div>
+            <input id="globalSearch" class="search" placeholder="Search SKU, order, customer, AWB..." />
+          </div>
+          <div class="top-right">
+            <span id="apiStatus" class="pill pill-yellow"><span class="status-dot warn"></span> API checking</span>
+            <button id="warehouseModeBtn" class="btn btn-light btn-sm" title="Toggle warehouse mode">Warehouse</button>
+            <div class="user-meta" style="text-align:right"><b id="userName">User</b><div class="small muted" id="userRole">—</div></div>
+            <div class="avatar" id="userAvatar">U</div>
+            <button id="logoutBtn" class="btn btn-light btn-sm">Logout</button>
+          </div>
+        </header>
+
+        <div class="content tabs">
+          <!-- COCKPIT -->
+          <section id="tab-cockpit" class="tab-panel active">
+            <div class="page-head"><div><h2>Executive Cockpit</h2><p>Live cross-functional view of sales, inventory, finance, marketplace and approvals.</p></div><div class="toolbar"><button class="btn btn-light btn-sm" data-refresh="cockpit">Refresh</button><button class="btn btn-primary btn-sm" id="btnMorningBriefing">AI Morning Briefing</button></div></div>
+            <div class="grid stats">
+              <div class="card metric"><div class="label">Net Revenue</div><div class="value" id="statRevenue">₹0</div><div class="delta" id="statRevenueMeta">Current period</div></div>
+              <div class="card metric"><div class="label">Orders</div><div class="value" id="statOrders">0</div><div class="delta">All active channels</div></div>
+              <div class="card metric"><div class="label">Gross Margin</div><div class="value" id="statMargin">—</div><div class="delta">After COGS</div></div>
+              <div class="card metric"><div class="label">Settlement Mismatch</div><div class="value" id="statDisputes">0</div><div class="delta" id="statDisputeAmt">₹0 disputed</div></div>
+              <div class="card metric"><div class="label">Stock Alerts</div><div class="value" id="statStockAlerts">0</div><div class="delta">Low / expiring batches</div></div>
+            </div>
+            <div class="grid two" style="margin-top:14px">
+              <div class="card card-pad"><div class="card-title"><h3>Operational Pulse</h3><span class="pill pill-green" id="activeWorkspaceBadge">All Firms</span></div><div id="opsPulse" class="kpi-list"></div></div>
+              <div class="card card-pad"><div class="card-title"><h3>AI Briefing</h3><span class="small muted" id="briefingTime">Not generated</span></div><div id="briefingActionsList" class="timeline"><div class="empty">Generate a briefing to see prioritized actions.</div></div></div>
+            </div>
+            <div class="grid two" style="margin-top:14px">
+              <div class="card card-pad"><div class="card-title"><h3>Firm Snapshot</h3></div><div class="split"><div class="kpi-row"><span>Jivanya Foods</span><b id="jivStats">₹0</b></div><div class="kpi-row"><span>Shreeju Foods</span><b id="shrStats">₹0</b></div></div></div>
+              <div class="card card-pad"><div class="card-title"><h3>Compliance Watch</h3><button class="btn btn-light btn-sm" data-goto="compliance">Open Vault</button></div><div id="complianceWatch" class="kpi-list"></div></div>
+            </div>
+          </section>
+
+          <!-- CATALOG -->
+          <section id="tab-catalog" class="tab-panel">
+            <div class="page-head"><div><h2>Product Master Vault</h2><p>ERP is the authoritative source. Marketplaces sync from this master, never the reverse.</p></div><button id="btnAddProduct" class="btn btn-primary">+ Add Product</button></div>
+            <div class="card card-pad"><div class="toolbar" style="margin-bottom:12px"><input id="catalogSearch" placeholder="Search name / SKU" /><select id="catalogCategory"><option value="">All categories</option></select><button class="btn btn-light btn-sm" id="btnSyncCatalog">Sync Channels</button></div><div class="table-wrap"><table class="table"><thead><tr><th>SKU</th><th>Product</th><th>Firm</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead><tbody id="catalogTableBody"></tbody></table></div></div>
+          </section>
+
+          <!-- B2B -->
+          <section id="tab-b2b" class="tab-panel">
+            <div class="page-head"><div><h2>B2B, Commercial Pricing & Schemes</h2><p>Wholesale price lists, credit limits, quotations, recurring orders and volume schemes.</p></div><button class="btn btn-primary" id="btnNewQuotation">New Quotation</button></div>
+            <div class="grid four"><div class="card metric"><div class="label">B2B Receivable</div><div class="value" id="b2bReceivable">₹0</div></div><div class="card metric"><div class="label">Credit Utilised</div><div class="value" id="b2bCreditUsed">₹0</div></div><div class="card metric"><div class="label">Open Quotations</div><div class="value" id="b2bQuotes">0</div></div><div class="card metric"><div class="label">Recurring Orders</div><div class="value" id="b2bRecurring">0</div></div></div>
+            <div class="grid two" style="margin-top:14px"><div class="card card-pad"><div class="card-title"><h3>Customers & Credit</h3><button class="btn btn-light btn-sm" id="btnAddB2B">Add Customer</button></div><div class="table-wrap"><table class="table"><thead><tr><th>Customer</th><th>Price List</th><th>Credit Limit</th><th>Outstanding</th><th>Status</th></tr></thead><tbody id="b2bCustomerBody"></tbody></table></div></div><div class="card card-pad"><div class="card-title"><h3>Active Schemes</h3><button class="btn btn-light btn-sm" id="btnAddScheme">New Scheme</button></div><div id="schemeList" class="kpi-list"></div></div></div>
+          </section>
+
+          <!-- POS -->
+          <section id="tab-pos" class="tab-panel">
+            <div class="page-head"><div><h2>POS Counter Billing</h2><p>Multi-item retail billing with backend-controlled pricing, inventory and audit trail.</p></div><span class="pill pill-blue" id="posSessionBadge">Session closed</span></div>
+            <div class="grid two"><div class="card card-pad"><div class="card-title"><h3>New Bill</h3><button class="btn btn-light btn-sm" id="btnPosOpenSession">Open Session</button></div><div class="form-grid"><div class="field"><label>Firm</label><select id="posFirm"><option value="FIRM-JIVANYA">Jivanya Foods</option><option value="FIRM-SHREEJU">Shreeju Foods</option></select></div><div class="field"><label>Customer Phone</label><input id="posCustomerPhone" placeholder="Optional" /></div><div class="field span2"><label>SKU</label><div style="display:flex;gap:8px"><input id="posSku" placeholder="Scan or enter SKU" /><input id="posQty" type="number" min="1" value="1" style="max-width:100px" /><button class="btn btn-soft" id="btnPosAddItem" type="button">Add</button></div></div></div><div class="table-wrap"><table class="table"><thead><tr><th>SKU</th><th>Item</th><th>Qty</th><th>Rate</th><th>Total</th><th></th></tr></thead><tbody id="posCartBody"></tbody></table></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div><div class="small muted">Bill Total</div><div style="font-size:22px;font-weight:900" id="posCartTotal">₹0</div></div><div class="toolbar"><select id="posPayMode"><option>CASH</option><option>UPI</option><option>CARD</option><option>CREDIT</option></select><button class="btn btn-primary" id="btnPosCheckout">Complete Bill</button></div></div><div id="posSuccessMsg" class="success hidden" style="margin-top:10px"></div></div><div class="card card-pad"><div class="card-title"><h3>Recent POS Bills</h3></div><div id="posRecentList" class="kpi-list"></div></div></div>
+          </section>
+
+          <!-- MARKETPLACES -->
+          <section id="tab-marketplaces" class="tab-panel">
+            <div class="page-head"><div><h2>Omnichannel Marketplaces</h2><p>Amazon, Meesho, Flipkart, JioMart and D2C performance, listings, fees and settlement audits.</p></div><button class="btn btn-primary" id="btnMarketplaceSync">Sync All</button></div>
+            <div class="grid stats"><div class="card metric"><div class="label">Marketplace GMV</div><div class="value" id="mpGmv">₹0</div></div><div class="card metric"><div class="label">Net Payout</div><div class="value" id="mpPayout">₹0</div></div><div class="card metric"><div class="label">Fees</div><div class="value" id="mpFees">₹0</div></div><div class="card metric"><div class="label">RTO Rate</div><div class="value" id="mpRtoRate">0%</div></div><div class="card metric"><div class="label">Mismatch</div><div class="value" id="mpMismatch">₹0</div></div></div>
+            <div class="card card-pad" style="margin-top:14px"><div class="card-title"><h3>Channel Performance</h3><button class="btn btn-light btn-sm" id="btnUploadMarketplace">Import Orders</button></div><div class="table-wrap"><table class="table"><thead><tr><th>Channel</th><th>GMV</th><th>Orders</th><th>Fees</th><th>Net Payout</th><th>RTO</th><th>Listings</th><th>Status</th></tr></thead><tbody id="marketTableBody"></tbody></table></div></div>
+            <div class="grid two" style="margin-top:14px"><div class="card card-pad"><div class="card-title"><h3>Settlement Audit</h3></div><div class="form-grid"><div class="field"><label>Settlement Ref</label><input id="recoSettlementRef" /></div><div class="field"><label>UTR</label><input id="recoUtr" /></div><div class="field"><label>Received Amount</label><input id="recoAmount" type="number" step="0.01" /></div><div class="field" style="align-self:end"><button class="btn btn-primary" id="btnReco">Reconcile</button></div></div><div id="recoResult"></div></div><div class="card card-pad"><div class="card-title"><h3>Buy Box / Listing Watch</h3></div><div class="form-grid"><div class="field"><label>SKU</label><input id="sentinelSku" /></div><div class="field"><label>Competitor</label><input id="sentinelCompetitor" /></div><div class="field"><label>Observed Price</label><input id="sentinelPrice" type="number" /></div><div class="field" style="align-self:end"><button class="btn btn-light" id="btnSentinel">Evaluate</button></div></div><div id="sentinelStatus" class="small muted"></div></div></div>
+          </section>
+
+          <!-- CRM -->
+          <section id="tab-crm" class="tab-panel"><div class="page-head"><div><h2>CRM & Retention</h2><p>Customer activity, repeat buying, D2C migration and communication history.</p></div></div><div class="grid four"><div class="card metric"><div class="label">Customers</div><div class="value" id="crmCustomers">0</div></div><div class="card metric"><div class="label">Repeat Rate</div><div class="value" id="crmRepeat">0%</div></div><div class="card metric"><div class="label">At-risk</div><div class="value" id="crmRisk">0</div></div><div class="card metric"><div class="label">D2C Migrated</div><div class="value" id="crmD2C">0</div></div></div><div class="grid two" style="margin-top:14px"><div class="card card-pad"><div class="card-title"><h3>WhatsApp Nudge</h3></div><div class="form-grid"><div class="field"><label>Phone</label><input id="nudgePhone" /></div><div class="field"><label>Product</label><input id="nudgeProduct" /></div><div class="field span2"><button class="btn btn-primary" id="btnNudge">Prepare Nudge</button></div></div><div id="nudgeStatus"></div></div><div class="card card-pad"><div class="card-title"><h3>Customer Segments</h3></div><div id="customerSegments" class="kpi-list"></div></div></div></section>
+
+          <!-- INVENTORY -->
+          <section id="tab-inventory" class="tab-panel">
+            <div class="page-head"><div><h2>Inventory, Batches & FEFO</h2><p>Batch-level stock, expiry risk, reservations and immutable stock ledger.</p></div><div class="toolbar"><button class="btn btn-light" id="btnStockReconcile">Reconcile Ledger</button><button class="btn btn-primary" id="btnReceiveStock">Receive Stock</button></div></div>
+            <div class="grid four"><div class="card metric"><div class="label">On Hand</div><div class="value" id="invOnHand">0</div></div><div class="card metric"><div class="label">Reserved</div><div class="value" id="invReserved">0</div></div><div class="card metric"><div class="label">Low Stock SKUs</div><div class="value" id="invLow">0</div></div><div class="card metric"><div class="label">Expiring Soon</div><div class="value" id="invExpiring">0</div></div></div>
+            <div class="card card-pad" style="margin-top:14px"><div class="toolbar" style="margin-bottom:12px"><input id="inventorySearch" placeholder="Search SKU / batch" /><select id="inventoryStatusFilter"><option value="">All stock</option><option value="LOW">Low stock</option><option value="EXPIRING">Expiring</option></select></div><div class="table-wrap"><table class="table"><thead><tr><th>SKU</th><th>Product</th><th>Batch</th><th>Expiry</th><th>On Hand</th><th>Reserved</th><th>Available</th><th>Location</th><th>Status</th></tr></thead><tbody id="inventoryTableBody"></tbody></table></div></div>
+          </section>
+
+          <!-- PROCUREMENT -->
+          <section id="tab-procurement" class="tab-panel"><div class="page-head"><div><h2>Procurement & Vendors</h2><p>Purchase suggestions, POs, GRN, QC and vendor dues.</p></div><button class="btn btn-primary" id="btnCreatePO">Create Purchase Order</button></div><div class="grid four"><div class="card metric"><div class="label">Open POs</div><div class="value" id="poOpen">0</div></div><div class="card metric"><div class="label">Pending GRN</div><div class="value" id="poGrn">0</div></div><div class="card metric"><div class="label">Vendor Dues</div><div class="value" id="poDues">₹0</div></div><div class="card metric"><div class="label">QC Holds</div><div class="value" id="poQc">0</div></div></div><div class="grid two" style="margin-top:14px"><div class="card card-pad"><div class="card-title"><h3>AI Purchase Suggestions</h3><button class="btn btn-light btn-sm" id="btnPurchaseSuggestions">Generate</button></div><div id="purchaseSuggestionList" class="kpi-list"></div></div><div class="card card-pad"><div class="card-title"><h3>Recent Purchase Orders</h3></div><div class="table-wrap"><table class="table"><thead><tr><th>PO</th><th>Vendor</th><th>Amount</th><th>Expected</th><th>Status</th></tr></thead><tbody id="poTableBody"></tbody></table></div></div></div></section>
+
+          <!-- PRODUCTION -->
+          <section id="tab-production" class="tab-panel"><div class="page-head"><div><h2>Production & BOM</h2><p>Issue raw material, produce finished goods, capture wastage and batch dates from backend rules.</p></div><button class="btn btn-light" id="btnViewBoms">BOM Library</button></div><div class="grid two"><div class="card card-pad"><div class="card-title"><h3>Start Production Run</h3></div><div class="form-grid"><div class="field"><label>Firm</label><select id="mfgFirm"><option value="FIRM-JIVANYA">Jivanya Foods</option><option value="FIRM-SHREEJU">Shreeju Foods</option></select></div><div class="field"><label>Finished SKU</label><input id="mfgSku" /></div><div class="field"><label>Planned Quantity</label><input id="mfgQty" type="number" min="0.001" step="0.001" /></div><div class="field"><label>Batch Code</label><input id="mfgBatch" placeholder="Auto if blank" /></div><div class="field span2"><button class="btn btn-primary" id="btnMfgRun">Create Production Order</button></div></div><div id="mfgStatus"></div></div><div class="card card-pad"><div class="card-title"><h3>Active Production</h3></div><div id="productionList" class="kpi-list"></div></div></div></section>
+
+          <!-- LOGISTICS -->
+          <section id="tab-logistics" class="tab-panel"><div class="page-head"><div><h2>Logistics, NDR & RTO</h2><p>Shipment manifests, tracking, weight disputes, NDR and return QC.</p></div></div><div class="grid three"><div class="card card-pad"><div class="card-title"><h3>Scan / Track</h3></div><div class="field"><label>AWB</label><input id="ocrAwb" /></div><button class="btn btn-primary btn-block" id="btnOcr">Track AWB</button><div id="ocrResult" style="margin-top:10px"></div></div><div class="card card-pad"><div class="card-title"><h3>Weight Claim</h3></div><div class="field"><label>AWB</label><input id="spfAwb" /></div><div class="split"><div class="field"><label>Expected kg</label><input id="spfExpWt" type="number" step=".001" /></div><div class="field"><label>Charged kg</label><input id="spfRecWt" type="number" step=".001" /></div></div><div class="field"><label>Claim Amount</label><input id="spfClaimAmt" type="number" step=".01" /></div><button class="btn btn-light btn-block" id="btnSpf">Create Claim</button><div id="spfStatus" style="margin-top:10px"></div></div><div class="card card-pad"><div class="card-title"><h3>RTO QC</h3></div><div class="field"><label>AWB</label><input id="rtoAwb" /></div><div class="field"><label>SKU</label><input id="rtoSku" /></div><div class="split"><div class="field"><label>Qty</label><input id="rtoQty" type="number" min="1" value="1" /></div><div class="field"><label>QC Status</label><select id="rtoQcStatus"><option>RESTOCK</option><option>DAMAGED</option><option>REPACK</option><option>REJECT</option></select></div></div><button class="btn btn-primary btn-block" id="btnRtoQc">Process Return</button><div id="rtoQcResult" style="margin-top:10px"></div></div></div></section>
+
+          <!-- WAREHOUSE -->
+          <section id="tab-warehouse" class="tab-panel"><div class="page-head"><div><h2>Warehouse Mobile Mode</h2><p>Large-touch scanning workflow for receiving, picking, FEFO validation and packing.</p></div></div><div class="grid two"><div class="card card-pad"><div class="card-title"><h3>Barcode / QR Scan</h3><span class="pill pill-green">FEFO enabled</span></div><div class="field"><label>Barcode</label><input id="scanBarcodeVal" inputmode="text" autofocus style="font-size:20px;padding:16px" placeholder="Scan barcode" /></div><button class="btn btn-primary btn-block" id="btnWarehouseScan" style="padding:14px">Scan</button><div id="scanResultBox" style="margin-top:12px"></div></div><div class="card card-pad"><div class="card-title"><h3>Pick Queue</h3><button class="btn btn-light btn-sm" id="btnWarehouseSync">Sync Offline Queue</button></div><div id="pickQueueList" class="kpi-list"></div></div></div></section>
+
+          <!-- FINANCE -->
+          <section id="tab-finance" class="tab-panel"><div class="page-head"><div><h2>Finance, Accounting & Banking</h2><p>P&L, bank UTR reconciliation, expenses and marketplace settlement visibility.</p></div><button class="btn btn-light" id="btnImportBank">Import Bank Statement</button></div><div class="grid stats"><div class="card metric"><div class="label">Revenue</div><div class="value" id="accRev">₹0</div></div><div class="card metric"><div class="label">COGS</div><div class="value" id="accCogs">₹0</div></div><div class="card metric"><div class="label">Marketplace Fees</div><div class="value" id="accFee">₹0</div></div><div class="card metric"><div class="label">Taxes</div><div class="value" id="accTax">₹0</div></div><div class="card metric"><div class="label">Net Profit</div><div class="value" id="accProfit">₹0</div></div></div><div class="grid two" style="margin-top:14px"><div class="card card-pad"><div class="card-title"><h3>Manual Expense</h3></div><div class="form-grid"><div class="field"><label>Firm</label><select id="expFirm"><option value="FIRM-JIVANYA">Jivanya Foods</option><option value="FIRM-SHREEJU">Shreeju Foods</option></select></div><div class="field"><label>Account</label><input id="expAccount" /></div><div class="field"><label>Amount</label><input id="expAmount" type="number" step=".01" /></div><div class="field"><label>Description</label><input id="expDesc" /></div><div class="field span2"><button class="btn btn-primary" id="btnExp">Post Expense</button></div></div></div><div class="card card-pad"><div class="card-title"><h3>Bank Reconciliation</h3></div><div class="table-wrap"><table class="table"><thead><tr><th>Date</th><th>UTR</th><th>Amount</th><th>Matched</th><th>Action</th></tr></thead><tbody id="recoTableBody"></tbody></table></div></div></div></section>
+
+          <!-- GST -->
+          <section id="tab-gst" class="tab-panel"><div class="page-head"><div><h2>GST, E-Invoice & E-Way Bill</h2><p>Firm-configured GSTIN and selected tax period. No compliance identifiers are hardcoded in the browser.</p></div></div><div class="grid two"><div class="card card-pad"><div class="card-title"><h3>Return Workspace</h3></div><div class="form-grid"><div class="field"><label>Firm</label><select id="gstFirm"><option value="FIRM-JIVANYA">Jivanya Foods</option><option value="FIRM-SHREEJU">Shreeju Foods</option></select></div><div class="field"><label>Tax Period</label><input id="gstPeriod" type="month" /></div><div class="field"><label>GSTR-1</label><button class="btn btn-light" id="btnGstr1">Generate Summary</button></div><div class="field"><label>GSTR-3B</label><button class="btn btn-light" id="btnGstr3b">Generate Summary</button></div></div><div class="split"><div class="info" id="gstr1Summary">Not generated</div><div class="info" id="gstr3bSummary">Not generated</div></div></div><div class="card card-pad"><div class="card-title"><h3>E-Invoice / E-Way</h3></div><div class="field"><label>Invoice ID</label><input id="gstInvoiceId" /></div><div class="toolbar"><button class="btn btn-primary" id="btnEinvoice">Prepare E-Invoice</button><button class="btn btn-light" id="btnEway">Prepare E-Way Bill</button></div><div id="gstActionResult" style="margin-top:10px"></div></div></div></section>
+
+          <!-- COMPLIANCE -->
+          <section id="tab-compliance" class="tab-panel"><div class="page-head"><div><h2>Compliance Vault</h2><p>FSSAI Lic. No. 22725884000388, trademark, GST and statutory document renewals with expiry alerts.</p></div><button class="btn btn-primary" id="btnAddCompliance">Add Record</button></div><div class="card card-pad"><div class="table-wrap"><table class="table"><thead><tr><th>Type</th><th>Firm</th><th>Reference</th><th>Issued</th><th>Expiry</th><th>Owner</th><th>Status</th><th>Action</th></tr></thead><tbody id="complianceTableBody"></tbody></table></div></div></section>
+
+          <!-- AI -->
+          <section id="tab-ai" class="tab-panel"><div class="page-head"><div><h2>Unified Free AI Mesh</h2><p>12 local/explainable AI agents with RAG, market discovery, automation and human approval gates — no paid AI API required.</p></div><button class="btn btn-primary" id="btnRunSupervisor">Run Supervisor</button></div><div class="grid four"><div class="card metric"><div class="label">Pending AI Approvals</div><div class="value" id="aiApprovals">0</div></div><div class="card metric"><div class="label">Events Pending</div><div class="value" id="aiEvents">0</div></div><div class="card metric"><div class="label">Failed Jobs</div><div class="value" id="aiFailed">0</div></div><div class="card metric"><div class="label">Knowledge Chunks</div><div class="value" id="aiChunks">0</div></div></div><div class="grid two" style="margin-top:14px"><div class="card card-pad"><div class="card-title"><h3>AI Agent Mesh</h3></div><div class="kpi-list" id="aiAgentList"></div></div><div class="card card-pad"><div class="card-title"><h3>RAG Ask</h3></div><div class="field"><label>Question</label><textarea id="ragQuestion" placeholder="Ask about SOPs, products, compliance or operations..."></textarea></div><button class="btn btn-primary" id="btnRagAsk">Ask Knowledge Base</button><div id="ragAnswer" style="margin-top:12px"></div></div><div class="card card-pad"><div class="card-title"><h3>Recent Agent Runs</h3></div><div id="aiRunList" class="kpi-list"></div></div></div><div class="card card-pad" style="margin-top:14px"><div class="card-title"><h3>Creative Studio</h3></div><div class="form-grid"><div class="field"><label>Brand</label><select id="studioBrand"><option>Jivanya Foods</option><option>Shreeju Foods</option></select></div><div class="field"><label>Product</label><input id="studioProduct" /></div><div class="field"><label>Visual Type</label><select id="studioVisualType"><option>MARKETPLACE_PRODUCT</option><option>SOCIAL_POST</option><option>WHATSAPP_PROMO</option></select></div><div class="field"><label>Notes</label><input id="studioNotes" /></div><div class="field span2"><button class="btn btn-light" id="btnGenImage">Generate Creative Job</button></div></div><div id="imagePreviewBox" class="info">Free Creative Agent generates an SVG draft locally — no paid image API is used.</div></div></section>
+
+          <!-- APPROVALS -->
+          <section id="tab-approvals" class="tab-panel"><div class="page-head"><div><h2>Approval Queue</h2><p>Human approval for financial, GST, pricing and other high-risk AI actions.</p></div><button class="btn btn-light" data-refresh="approvals">Refresh</button></div><div class="card card-pad"><div class="table-wrap"><table class="table"><thead><tr><th>Created</th><th>Type</th><th>Requested By</th><th>Firm</th><th>Summary</th><th>Risk</th><th>Action</th></tr></thead><tbody id="approvalTableBody"></tbody></table></div></div></section>
+
+          <!-- NOTIFICATIONS -->
+          <section id="tab-notifications" class="tab-panel"><div class="page-head"><div><h2>Notifications</h2><p>Operational, compliance, finance and integration alerts.</p></div><button class="btn btn-light" id="btnMarkAllRead">Mark all read</button></div><div class="card card-pad"><div id="notificationList" class="timeline"></div></div></section>
+
+          <!-- SEO -->
+          <section id="tab-seo" class="tab-panel"><div class="page-head"><div><h2>Programmatic SEO</h2><p>Generate controlled landing-page drafts and queue them for publication/indexing.</p></div></div><div class="grid two"><div class="card card-pad"><div class="field"><label>Product / Topic</label><input id="seoProd" /></div><div class="field"><label>City / Intent</label><input id="seoCity" /></div><button class="btn btn-primary" id="btnSeoGenerate">Generate Draft</button></div><div class="card card-pad"><div class="card-title"><h3>Generated Draft</h3></div><pre id="seoResult" style="white-space:pre-wrap;margin:0;color:#425047"></pre></div></div></section>
+
+          <!-- TOOLS -->
+          <section id="tab-tools" class="tab-panel"><div class="page-head"><div><h2>Barcode, PDF, Tally & Traceability</h2><p>Operational tools for labels, manifest extraction, accounting export and food-batch traceability.</p></div></div>
+            <div class="grid two">
+              <div class="card card-pad"><div class="card-title"><h3>Barcode Generator & Thermal Print</h3><span class="pill pill-green">Browser print</span></div>
+                <div class="field"><label>SKU / Barcode</label><input id="toolBarcode" placeholder="890XXXXXXXXX" /></div>
+                <div class="toolbar"><button class="btn btn-primary" id="btnGenerateBarcode">Generate</button><button class="btn btn-light" id="btnPrintBarcode">Print Label</button></div>
+                <div style="margin-top:14px;padding:18px;border:1px dashed var(--line);border-radius:14px;text-align:center;background:#fff"><svg id="barcodeSvg"></svg><div id="barcodeCaption" class="mono small" style="margin-top:6px"></div></div>
+              </div>
+              <div class="card card-pad"><div class="card-title"><h3>Marketplace Manifest PDF</h3><span class="pill pill-blue">In-memory parsing</span></div>
+                <div class="field"><label>Firm</label><select id="manifestFirm"><option value="FIRM-SHREEJU">Shreeju Foods</option><option value="FIRM-JIVANYA">Jivanya Foods</option></select></div>
+                <div class="field"><label>Manifest PDF</label><input id="manifestPdf" type="file" accept="application/pdf" /></div>
+                <button class="btn btn-primary" id="btnManifestPdf">Extract Orders</button><div id="manifestResult" style="margin-top:10px"></div>
+              </div>
+            </div>
+            <div class="grid two" style="margin-top:14px">
+              <div class="card card-pad"><div class="card-title"><h3>Tally Prime XML Export</h3></div><div class="form-grid"><div class="field"><label>Firm</label><select id="tallyFirm"><option value="FIRM-SHREEJU">Shreeju Foods</option><option value="FIRM-JIVANYA">Jivanya Foods</option></select></div><div class="field"><label>From</label><input id="tallyFrom" type="date" /></div><div class="field"><label>To</label><input id="tallyTo" type="date" /></div><div class="field" style="align-self:end"><button class="btn btn-primary" id="btnTallyExport">Download XML</button></div></div><div class="info" style="margin-top:8px">Export contains balanced ERP journal entries. Import into Tally only after reviewing ledger mappings.</div></div>
+              <div class="card card-pad"><div class="card-title"><h3>FSSAI Lic. No. 22725884000388 / Batch Traceability</h3></div><div class="form-grid"><div class="field"><label>Firm</label><select id="traceFirm"><option value="FIRM-SHREEJU">Shreeju Foods</option><option value="FIRM-JIVANYA">Jivanya Foods</option></select></div><div class="field"><label>Batch No.</label><input id="traceBatch" /></div><div class="field"><label>SKU</label><input id="traceSku" /></div><div class="field"><label>Quantity</label><input id="traceQty" type="number" step="0.001" /></div><div class="field span2"><button class="btn btn-light" id="btnTraceRecord">Record Traceability</button></div></div><div id="traceResult" style="margin-top:10px"></div></div>
+            </div>
+          </section>
+
+          <!-- SYSTEM -->
+          <section id="tab-system" class="tab-panel"><div class="page-head"><div><h2>System, Audit & Integrations</h2><p>API health, external adapters, background jobs, backups and audit log.</p></div><div class="toolbar"><button class="btn btn-light" id="btnBackup">Request Backup</button><button class="btn btn-primary" id="btnHealthCheck">Health Check</button></div></div><div class="grid four"><div class="card metric"><div class="label">API</div><div class="value" id="sysApi">—</div></div><div class="card metric"><div class="label">Database</div><div class="value" id="sysDb">—</div></div><div class="card metric"><div class="label">Worker</div><div class="value" id="sysWorker">—</div></div><div class="card metric"><div class="label">Last Backup</div><div class="value" id="sysBackup" style="font-size:16px">—</div></div></div><div class="grid two" style="margin-top:14px"><div class="card card-pad"><div class="card-title"><h3>Integration Status</h3></div><div id="integrationList" class="kpi-list"></div></div><div class="card card-pad"><div class="card-title"><h3>Audit Log</h3></div><div class="table-wrap"><table class="table"><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Entity</th><th>Result</th></tr></thead><tbody id="auditTableBody"></tbody></table></div></div></div></section>
+        </div>
+      </main>
+    </div>
+  </section>
+</div>
+
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-card"><div class="modal-head"><h3 id="modalTitle" style="margin:0">Dialog</h3><button class="btn btn-light btn-sm" id="modalClose">✕</button></div><div id="modalBody" class="modal-body"></div><div id="modalFoot" class="modal-foot"></div></div></div>
+<div id="toastWrap" class="toast-wrap"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script>
+(() => {
+  "use strict";
+
+  const CONFIG = {
+    API_BASE: (window.ERP_API_BASE || "https://shreeju-erp-api.onrender.com").replace(/\/$/, ""),
+    API_PREFIX: "/api/v1",
+    TOKEN_KEY: "shreeju_erp_access_token",
+    USER_KEY: "shreeju_erp_user",
+    REQUEST_TIMEOUT_MS: 20000,
+  };
+
+  const state = {
+    user: null,
+    token: null,
+    selectedFirm: "FIRM-SHREEJU",
+    activeTab: "cockpit",
+    permissions: new Set(),
+    posCart: [],
+    posSessionId: null,
+    warehouseMode: false,
+    cache: new Map(),
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
+  const money = (v) => new Intl.NumberFormat("en-IN", {style:"currency", currency:"INR", maximumFractionDigits:2}).format(Number(v || 0));
+  const num = (v) => new Intl.NumberFormat("en-IN").format(Number(v || 0));
+  const pct = (v) => `${Number(v || 0).toFixed(1)}%`;
+  const text = (v, fallback="—") => (v === null || v === undefined || v === "") ? fallback : String(v);
+  const todayMonth = () => new Date().toISOString().slice(0,7);
+  const selectedTransactionalFirm = () => state.selectedFirm === "ALL" ? null : state.selectedFirm;
+
+  function toast(message, type="success") {
+    const node = document.createElement("div");
+    node.className = `toast ${type === "error" ? "error-toast" : ""}`;
+    node.textContent = message;
+    $("toastWrap").appendChild(node);
+    setTimeout(() => node.remove(), 4200);
+  }
+
+  function setMessage(el, message, type="info") {
+    if (!el) return;
+    el.className = type === "error" ? "error" : type === "success" ? "success" : "info";
+    el.textContent = message;
+  }
+
+  function clearNode(el) { while (el && el.firstChild) el.removeChild(el.firstChild); }
+  function td(value, cls="") { const n=document.createElement("td"); n.className=cls; n.textContent=text(value,""); return n; }
+  function badge(label, tone="green") { const s=document.createElement("span"); s.className=`pill pill-${tone}`; s.textContent=text(label); return s; }
+  function rowEmpty(tbody, colspan, msg="No records found") { clearNode(tbody); const tr=document.createElement("tr"); const cell=td(msg); cell.colSpan=colspan; cell.className="empty"; tr.appendChild(cell); tbody.appendChild(tr); }
+
+  function getFirmName(id) { return id === "FIRM-JIVANYA" ? "Jivanya Foods" : id === "FIRM-SHREEJU" ? "Shreeju Foods" : "All Firms"; }
+  function requireFirm(actionLabel="this action") {
+    const firm = selectedTransactionalFirm();
+    if (!firm) { toast(`Select Jivanya or Shreeju before ${actionLabel}.`, "error"); return null; }
+    return firm;
+  }
+
+  function qs(params={}) {
+    const out = new URLSearchParams();
+    Object.entries(params).forEach(([k,v]) => { if (v !== undefined && v !== null && v !== "") out.set(k, v); });
+    const s=out.toString(); return s ? `?${s}` : "";
+  }
+
+  async function api(path, options={}) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), CONFIG.REQUEST_TIMEOUT_MS);
+    const isForm = options.body instanceof FormData;
+    const headers = new Headers(options.headers || {});
+    if (!isForm && options.body !== undefined && !headers.has("Content-Type")) headers.set("Content-Type","application/json");
+    if (state.token) headers.set("Authorization", `Bearer ${state.token}`);
+    headers.set("Accept","application/json");
+    const url = path.startsWith("http") ? path : `${CONFIG.API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
+    try {
+      const resp = await fetch(url, {...options, headers, signal: controller.signal});
+      const raw = await resp.text();
+      let payload = null;
+      try { payload = raw ? JSON.parse(raw) : null; } catch { payload = raw; }
+      if (resp.status === 401) { clearSession(); showLogin(); throw new Error("Session expired. Please sign in again."); }
+      if (!resp.ok) {
+        const msg = payload?.error?.message || payload?.detail || payload?.message || `Request failed (${resp.status})`;
+        throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
+      }
+      return payload?.data !== undefined ? payload.data : payload;
+    } catch (err) {
+      if (err.name === "AbortError") throw new Error("Request timed out. Please try again.");
+      throw err;
+    } finally { clearTimeout(timer); }
+  }
+
+  function saveSession() {
+    if (state.token) sessionStorage.setItem(CONFIG.TOKEN_KEY, state.token); else sessionStorage.removeItem(CONFIG.TOKEN_KEY);
+    if (state.user) sessionStorage.setItem(CONFIG.USER_KEY, JSON.stringify(state.user)); else sessionStorage.removeItem(CONFIG.USER_KEY);
+  }
+  function restoreSession() {
+    state.token = sessionStorage.getItem(CONFIG.TOKEN_KEY);
+    try { state.user = JSON.parse(sessionStorage.getItem(CONFIG.USER_KEY) || "null"); } catch { state.user = null; }
+    state.permissions = new Set(state.user?.permissions || []);
+  }
+  function clearSession() { state.token=null; state.user=null; state.permissions.clear(); sessionStorage.removeItem(CONFIG.TOKEN_KEY); sessionStorage.removeItem(CONFIG.USER_KEY); }
+
+  function showLogin() { $("loginSection").classList.remove("hidden"); $("dashboardSection").classList.add("hidden"); }
+  function showDashboard() {
+    $("loginSection").classList.add("hidden"); $("dashboardSection").classList.remove("hidden");
+    const name = state.user?.name || state.user?.full_name || state.user?.email || "User";
+    $("userName").textContent = name; $("userRole").textContent = text(state.user?.role || state.user?.role_name,"User"); $("userAvatar").textContent = name.slice(0,1).toUpperCase();
+    applyRoleVisibility(); navigate(state.activeTab); healthCheck();
+  }
+
+  function applyRoleVisibility() {
+    const menuPermissions = {
+      catalog:"catalog.read", b2b:"b2b.read", pos:"pos.use", marketplaces:"marketplace.read", crm:"crm.read",
+      inventory:"inventory.read", procurement:"procurement.read", production:"production.read", logistics:"logistics.read",
+      finance:"accounting.read", gst:"gst.read", compliance:"compliance.read", ai:"ai.use", approvals:"approval.read",
+      system:"audit.read"
+    };
+    const hasPermissionModel = state.permissions.size > 0;
+    $$(".nav-btn[data-tab]").forEach(btn => {
+      const p = menuPermissions[btn.dataset.tab];
+      btn.classList.toggle("hidden", !!(hasPermissionModel && p && !state.permissions.has(p) && !state.permissions.has("*")));
+    });
+  }
+
+  function setFirm(firm) {
+    state.selectedFirm = firm;
+    $$(".workspace-switch button").forEach(b => b.classList.toggle("active", b.dataset.firm === firm));
+    $("activeWorkspaceBadge").textContent = getFirmName(firm); $("sidebarWorkspace").textContent = getFirmName(firm);
+    ["posFirm","mfgFirm","expFirm","gstFirm"].forEach(id => { const el=$(id); if (el && firm !== "ALL") el.value = firm; });
+    loadTab(state.activeTab, true);
+  }
+
+  function navigate(tab) {
+    state.activeTab = tab;
+    $$(".tab-panel").forEach(p => p.classList.remove("active"));
+    const panel = $(`tab-${tab}`); if (panel) panel.classList.add("active");
+    $$(".nav-btn[data-tab]").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+    $("sidebar").classList.remove("open");
+    loadTab(tab);
+  }
+
+  async function healthCheck() {
+    try {
+      const data = await api("/health", {method:"GET"});
+      $("apiStatus").className="pill pill-green"; $("apiStatus").innerHTML="<span class='status-dot ok'></span> API online";
+      $("sysApi").textContent="Online"; if (data?.database) $("sysDb").textContent=text(data.database); if (data?.worker) $("sysWorker").textContent=text(data.worker);
+    } catch (e) {
+      $("apiStatus").className="pill pill-red"; $("apiStatus").innerHTML="<span class='status-dot bad'></span> API offline"; $("sysApi").textContent="Offline";
+    }
+  }
+
+  const loaders = {
+    cockpit: loadCockpit, catalog: loadCatalog, b2b: loadB2B, pos: loadPOS, marketplaces: loadMarketplaces, crm: loadCRM,
+    inventory: loadInventory, procurement: loadProcurement, production: loadProduction, logistics: async()=>{}, warehouse: loadWarehouse,
+    finance: loadFinance, gst: async()=>{}, compliance: loadCompliance, ai: loadAI, approvals: loadApprovals,
+    notifications: loadNotifications, seo: async()=>{}, system: loadSystem
+  };
+  async function loadTab(tab, force=false) {
+    const key=`${tab}:${state.selectedFirm}`; if (!force && state.cache.get(key) && Date.now()-state.cache.get(key)<15000) return;
+    state.cache.set(key,Date.now());
+    try { await (loaders[tab]?.() || Promise.resolve()); } catch(e) { toast(`${tab}: ${e.message}`,"error"); }
+  }
+
+  async function loadCockpit() {
+    const firm = state.selectedFirm === "ALL" ? "" : state.selectedFirm;
+    const d = await api(`${CONFIG.API_PREFIX}/dashboard/summary${qs({firm_id:firm})}`).catch(() => null);
+    if (!d) return;
+    $("statRevenue").textContent=money(d.net_revenue); $("statOrders").textContent=num(d.orders); $("statMargin").textContent=pct(d.gross_margin_pct);
+    $("statDisputes").textContent=num(d.settlement_mismatches); $("statDisputeAmt").textContent=`${money(d.settlement_mismatch_amount)} disputed`; $("statStockAlerts").textContent=num(d.stock_alerts);
+    $("jivStats").textContent=money(d.firms?.jivanya?.net_revenue); $("shrStats").textContent=money(d.firms?.shreeju?.net_revenue);
+    renderKpiList($("opsPulse"), [
+      ["Pending packing", num(d.pending_packing)], ["Pending dispatch",num(d.pending_dispatch)], ["Low stock",num(d.low_stock)], ["Expiring batches",num(d.expiring_batches)], ["Bank unmatched",num(d.bank_unmatched)]
+    ]);
+    renderKpiList($("complianceWatch"), (d.compliance_alerts || []).map(x => [x.title, x.status || x.days_left + " days"]));
+    $("approvalBadge").textContent=num(d.pending_approvals); $("notificationBadge").textContent=num(d.unread_notifications);
+  }
+
+  async function loadCatalog() {
+    const firm=state.selectedFirm === "ALL" ? "" : state.selectedFirm;
+    const list = await api(`${CONFIG.API_PREFIX}/products${qs({firm_id:firm, search:$("catalogSearch").value})}`).catch(()=>[]);
+    const items=Array.isArray(list)?list:(list?.items||[]); renderCatalog(items);
+  }
+  function renderCatalog(items) {
+    const body=$("catalogTableBody"); clearNode(body); if(!items.length) return rowEmpty(body,8);
+    items.forEach(p=>{const tr=document.createElement("tr"); tr.append(td(p.sku,"mono"),td(p.name),td(getFirmName(p.firm_id)),td(p.category),td(money(p.selling_price)),td(num(p.available_stock)));
+      const st=td("");st.appendChild(badge(p.active===false?"Inactive":"Active",p.active===false?"yellow":"green"));tr.appendChild(st);
+      const ac=td("");const b=document.createElement("button");b.className="btn btn-light btn-sm";b.textContent="Edit";b.addEventListener("click",()=>openProductModal(p));ac.appendChild(b);tr.appendChild(ac);body.appendChild(tr);});
+  }
+
+  async function loadInventory() {
+    const firm=state.selectedFirm === "ALL" ? "" : state.selectedFirm;
+    const data=await api(`${CONFIG.API_PREFIX}/inventory/stock${qs({firm_id:firm, search:$("inventorySearch").value, status:$("inventoryStatusFilter").value})}`).catch(()=>({items:[]}));
+    const items=Array.isArray(data)?data:(data.items||[]); $("invOnHand").textContent=num(data.total_on_hand);$("invReserved").textContent=num(data.total_reserved);$("invLow").textContent=num(data.low_stock_count);$("invExpiring").textContent=num(data.expiring_count);
+    const body=$("inventoryTableBody");clearNode(body);if(!items.length)return rowEmpty(body,9);
+    items.forEach(x=>{const tr=document.createElement("tr");[x.sku,x.product_name,x.batch_no,x.expiry_date,num(x.on_hand),num(x.reserved),num(x.available),x.location].forEach((v,i)=>tr.appendChild(td(v,i===0?"mono":"")));const s=td("");s.appendChild(badge(x.status||"OK",x.status==="LOW"||x.status==="EXPIRING"?"yellow":"green"));tr.appendChild(s);body.appendChild(tr);});
+  }
+
+  async function loadB2B() {
+    const firm=state.selectedFirm === "ALL" ? "" : state.selectedFirm; const d=await api(`${CONFIG.API_PREFIX}/b2b/summary${qs({firm_id:firm})}`).catch(()=>null); if(!d)return;
+    $("b2bReceivable").textContent=money(d.receivable);$("b2bCreditUsed").textContent=money(d.credit_used);$("b2bQuotes").textContent=num(d.open_quotations);$("b2bRecurring").textContent=num(d.recurring_orders);
+    const body=$("b2bCustomerBody");clearNode(body);(d.customers||[]).forEach(c=>{const tr=document.createElement("tr");tr.append(td(c.name),td(c.price_list),td(money(c.credit_limit)),td(money(c.outstanding)));const s=td("");s.appendChild(badge(c.status||"ACTIVE",c.status==="HOLD"?"red":"green"));tr.appendChild(s);body.appendChild(tr)});if(!body.children.length)rowEmpty(body,5);
+    renderKpiList($("schemeList"),(d.schemes||[]).map(s=>[s.name,s.summary]));
+  }
+
+  async function loadPOS(){ const firm=state.selectedFirm==="ALL"?"":state.selectedFirm; const d=await api(`${CONFIG.API_PREFIX}/pos/recent${qs({firm_id:firm})}`).catch(()=>({items:[]})); renderKpiList($("posRecentList"),(d.items||d||[]).slice(0,10).map(x=>[x.invoice_no||x.id,`${money(x.total)} • ${x.payment_mode||""}`])); }
+
+  async function loadMarketplaces(){ const firm=state.selectedFirm==="ALL"?"":state.selectedFirm; const d=await api(`${CONFIG.API_PREFIX}/marketplaces/summary${qs({firm_id:firm})}`).catch(()=>null); if(!d)return;$("mpGmv").textContent=money(d.gmv);$("mpPayout").textContent=money(d.net_payout);$("mpFees").textContent=money(d.fees);$("mpRtoRate").textContent=pct(d.rto_rate);$("mpMismatch").textContent=money(d.mismatch);const body=$("marketTableBody");clearNode(body);(d.channels||[]).forEach(c=>{const tr=document.createElement("tr");tr.append(td(c.channel),td(money(c.gmv)),td(num(c.orders)),td(money(c.fees)),td(money(c.net_payout)),td(pct(c.rto_rate)),td(num(c.listings)));const s=td("");s.appendChild(badge(c.status||"SYNCED",c.status==="ERROR"?"red":"green"));tr.appendChild(s);body.appendChild(tr)});if(!body.children.length)rowEmpty(body,8); }
+
+  async function loadCRM(){ const firm=state.selectedFirm==="ALL"?"":state.selectedFirm;const d=await api(`${CONFIG.API_PREFIX}/crm/summary${qs({firm_id:firm})}`).catch(()=>null);if(!d)return;$("crmCustomers").textContent=num(d.customers);$("crmRepeat").textContent=pct(d.repeat_rate);$("crmRisk").textContent=num(d.at_risk);$("crmD2C").textContent=num(d.d2c_migrated);renderKpiList($("customerSegments"),(d.segments||[]).map(s=>[s.name,num(s.count)])); }
+  async function loadProcurement(){const firm=state.selectedFirm==="ALL"?"":state.selectedFirm;const d=await api(`${CONFIG.API_PREFIX}/procurement/summary${qs({firm_id:firm})}`).catch(()=>null);if(!d)return;$("poOpen").textContent=num(d.open_pos);$("poGrn").textContent=num(d.pending_grn);$("poDues").textContent=money(d.vendor_dues);$("poQc").textContent=num(d.qc_holds);const body=$("poTableBody");clearNode(body);(d.purchase_orders||[]).forEach(x=>{const tr=document.createElement("tr");tr.append(td(x.po_no,"mono"),td(x.vendor_name),td(money(x.amount)),td(x.expected_date),td(x.status));body.appendChild(tr)});if(!body.children.length)rowEmpty(body,5);}
+  async function loadProduction(){const firm=state.selectedFirm==="ALL"?"":state.selectedFirm;const d=await api(`${CONFIG.API_PREFIX}/production/active${qs({firm_id:firm})}`).catch(()=>({items:[]}));renderKpiList($("productionList"),(d.items||d||[]).map(x=>[`${x.sku} • ${x.batch_no||"Pending batch"}`,`${num(x.planned_qty)} • ${x.status}`]));}
+  async function loadWarehouse(){const firm=state.selectedFirm==="ALL"?"":state.selectedFirm;const d=await api(`${CONFIG.API_PREFIX}/warehouse/pick-queue${qs({firm_id:firm})}`).catch(()=>({items:[]}));renderKpiList($("pickQueueList"),(d.items||d||[]).map(x=>[x.order_no,`${x.items_count||0} items • ${x.status||"READY"}`]));}
+  async function loadFinance(){const firm=state.selectedFirm==="ALL"?"":state.selectedFirm;const d=await api(`${CONFIG.API_PREFIX}/accounting/pnl-summary${qs({firm_id:firm})}`).catch(()=>null);if(!d)return;$("accRev").textContent=money(d.revenue);$("accCogs").textContent=money(d.cogs);$("accFee").textContent=money(d.marketplace_fees);$("accTax").textContent=money(d.taxes);$("accProfit").textContent=money(d.net_profit);const bank=await api(`${CONFIG.API_PREFIX}/accounting/bank/unmatched${qs({firm_id:firm})}`).catch(()=>({items:[]}));const body=$("recoTableBody");clearNode(body);(bank.items||bank||[]).forEach(x=>{const tr=document.createElement("tr");tr.append(td(x.date),td(x.utr,"mono"),td(money(x.amount)),td(x.matched?"Yes":"No"));const c=td("");const b=document.createElement("button");b.className="btn btn-light btn-sm";b.textContent="Match";b.onclick=()=>toast("Open reconciliation workflow from this transaction.");c.appendChild(b);tr.appendChild(c);body.appendChild(tr)});if(!body.children.length)rowEmpty(body,5);}
+  async function loadCompliance(){const firm=state.selectedFirm==="ALL"?"":state.selectedFirm;const d=await api(`${CONFIG.API_PREFIX}/compliance/items${qs({firm_id:firm})}`).catch(()=>({items:[]}));const body=$("complianceTableBody");clearNode(body);(d.items||d||[]).forEach(x=>{const tr=document.createElement("tr");tr.append(td(x.type),td(getFirmName(x.firm_id)),td(x.reference_no),td(x.issued_on),td(x.expires_on),td(x.owner));const s=td("");s.appendChild(badge(x.status||"VALID",x.status==="EXPIRED"?"red":x.status==="EXPIRING"?"yellow":"green"));tr.appendChild(s);tr.appendChild(td("View"));body.appendChild(tr)});if(!body.children.length)rowEmpty(body,8);}
+  async function loadAI(){const firm=state.selectedFirm==="ALL"?"":state.selectedFirm;const d=await api(`${CONFIG.API_PREFIX}/ai/ops-snapshot${qs({firm_id:firm})}`).catch(()=>null);if(!d)return;renderKpiList($("aiAgentList"),["Supervisor","CFO","Inventory","Sales/CRM","Procurement","Logistics","Fraud/Anomaly","SEO/Marketing","Market Intelligence","Compliance","RAG Knowledge","Creative"].map(x=>[x,"FREE LOCAL"]));$("aiApprovals").textContent=num(d.pending_approvals);$("aiEvents").textContent=num(d.pending_events);$("aiFailed").textContent=num(d.failed_jobs);$("aiChunks").textContent=num(d.knowledge_chunks);renderKpiList($("aiRunList"),(d.recent_runs||[]).map(x=>[x.agent,`${x.status} • ${x.started_at||""}`]));}
+  async function loadApprovals(){const firm=state.selectedFirm==="ALL"?"":state.selectedFirm;const d=await api(`${CONFIG.API_PREFIX}/approvals${qs({firm_id:firm,status:"PENDING"})}`).catch(()=>({items:[]}));const items=d.items||d||[];$("approvalBadge").textContent=num(items.length);const body=$("approvalTableBody");clearNode(body);items.forEach(x=>{const tr=document.createElement("tr");tr.append(td(x.created_at),td(x.action_type),td(x.requested_by),td(getFirmName(x.firm_id)),td(x.summary));const risk=td("");risk.appendChild(badge(x.risk||"MEDIUM",x.risk==="HIGH"?"red":x.risk==="LOW"?"green":"yellow"));tr.appendChild(risk);const ac=td("");["Approve","Reject"].forEach(label=>{const b=document.createElement("button");b.className=`btn btn-sm ${label==="Approve"?"btn-primary":"btn-light"}`;b.textContent=label;b.onclick=()=>handleApproval(x.id,label.toUpperCase());ac.appendChild(b)});tr.appendChild(ac);body.appendChild(tr)});if(!body.children.length)rowEmpty(body,7);}
+  async function loadNotifications(){const d=await api(`${CONFIG.API_PREFIX}/notifications${qs({unread_only:false})}`).catch(()=>({items:[]}));const items=d.items||d||[];$("notificationBadge").textContent=num(items.filter(x=>!x.read_at).length);const box=$("notificationList");clearNode(box);items.forEach(x=>{const item=document.createElement("div");item.className="timeline-item";const line=document.createElement("div");line.className="timeline-line";const c=document.createElement("div");const t=document.createElement("b");t.textContent=x.title||x.type||"Notification";const m=document.createElement("div");m.className="muted small";m.textContent=x.message||"";c.append(t,m);item.append(line,c);box.appendChild(item)});if(!items.length){const e=document.createElement("div");e.className="empty";e.textContent="No notifications";box.appendChild(e)}}
+  async function loadSystem(){await healthCheck();const d=await api(`${CONFIG.API_PREFIX}/system/status`).catch(()=>null);if(!d)return;$("sysDb").textContent=text(d.database);$("sysWorker").textContent=text(d.worker);$("sysBackup").textContent=text(d.last_backup);renderKpiList($("integrationList"),(d.integrations||[]).map(x=>[x.name,x.status]));const a=await api(`${CONFIG.API_PREFIX}/audit${qs({limit:25})}`).catch(()=>({items:[]}));const body=$("auditTableBody");clearNode(body);(a.items||a||[]).forEach(x=>{const tr=document.createElement("tr");tr.append(td(x.created_at),td(x.actor),td(x.action),td(x.entity_type),td(x.result));body.appendChild(tr)});if(!body.children.length)rowEmpty(body,5);}
+
+  function renderKpiList(container, items) { clearNode(container); if(!items?.length){const e=document.createElement("div");e.className="empty";e.textContent="No data";container.appendChild(e);return;}items.forEach(([a,b])=>{const r=document.createElement("div");r.className="kpi-row";const s=document.createElement("span");s.textContent=text(a);const v=document.createElement("b");v.textContent=text(b);r.append(s,v);container.appendChild(r)}); }
+
+  function openModal(title, bodyNode, actions=[]) { $("modalTitle").textContent=title;clearNode($("modalBody"));clearNode($("modalFoot"));$("modalBody").appendChild(bodyNode);actions.forEach(a=>{const b=document.createElement("button");b.className=a.className||"btn btn-primary";b.textContent=a.label;b.onclick=a.onClick;$("modalFoot").appendChild(b)});$("modal").classList.remove("hidden"); }
+  function closeModal(){ $("modal").classList.add("hidden"); }
+
+  function openProductModal(product=null) {
+    const wrap=document.createElement("div");wrap.className="form-grid";
+    const fields=[
+      ["firm_id","Firm","select",product?.firm_id||selectedTransactionalFirm()||"FIRM-SHREEJU"], ["sku","SKU","text",product?.sku||""], ["name","Product Name","text",product?.name||""], ["category","Category","text",product?.category||""], ["selling_price","Selling Price","number",product?.selling_price||""], ["cogs","COGS","number",product?.cogs||""], ["tax_rate","GST %","number",product?.tax_rate||""], ["reorder_level","Reorder Level","number",product?.reorder_level||""]
+    ];
+    const inputs={}; fields.forEach(([name,label,type,value])=>{const f=document.createElement("div");f.className="field";const l=document.createElement("label");l.textContent=label;let input;if(type==="select"){input=document.createElement("select");[["FIRM-JIVANYA","Jivanya Foods"],["FIRM-SHREEJU","Shreeju Foods"]].forEach(([v,t])=>{const o=document.createElement("option");o.value=v;o.textContent=t;input.appendChild(o)});input.value=value;}else{input=document.createElement("input");input.type=type;input.value=value;if(type==="number")input.step="0.01";}inputs[name]=input;f.append(l,input);wrap.appendChild(f)});
+    openModal(product?"Edit Product":"Add Product",wrap,[{label:"Cancel",className:"btn btn-light",onClick:closeModal},{label:"Save Product",onClick:async()=>{const payload={};Object.entries(inputs).forEach(([k,v])=>payload[k]=v.type==="number"?Number(v.value||0):v.value.trim());try{await api(`${CONFIG.API_PREFIX}/products${product?.id?`/${encodeURIComponent(product.id)}`:""}`,{method:product?.id?"PATCH":"POST",body:JSON.stringify(payload)});toast("Product saved");closeModal();loadCatalog();}catch(e){toast(e.message,"error")}}}]);
+  }
+
+  async function handleApproval(id, decision){try{await api(`${CONFIG.API_PREFIX}/approvals/${encodeURIComponent(id)}/${decision.toLowerCase()}`,{method:"POST"});toast(`Request ${decision.toLowerCase()}d`);loadApprovals();}catch(e){toast(e.message,"error")}}
+
+  async function login(e) {
+    e.preventDefault(); $("loginError").classList.add("hidden");
+    try {
+      const data=await api(`${CONFIG.API_PREFIX}/auth/login`,{method:"POST",body:JSON.stringify({username:$("loginUser").value.trim(),password:$("loginPass").value})});
+      state.token=data.access_token;state.user=data.user||{email:$("loginUser").value.trim(),role:data.role,permissions:data.permissions||[]};state.permissions=new Set(state.user.permissions||data.permissions||[]);saveSession();showDashboard();
+    } catch(e) { $("loginError").textContent=e.message;$("loginError").classList.remove("hidden"); }
+  }
+
+  async function morningBriefing(){try{const firm=state.selectedFirm==="ALL"?"":state.selectedFirm;const d=await api(`${CONFIG.API_PREFIX}/ai/cockpit/morning-briefing${qs({firm_id:firm})}`,{method:"POST"});const box=$("briefingActionsList");clearNode(box);(d.actions||[]).forEach(x=>{const item=document.createElement("div");item.className="timeline-item";const line=document.createElement("div");line.className="timeline-line";const c=document.createElement("div");const t=document.createElement("b");t.textContent=x.title||x.action||"Action";const m=document.createElement("div");m.className="small muted";m.textContent=x.reason||x.detail||"";c.append(t,m);item.append(line,c);box.appendChild(item)});$("briefingTime").textContent=new Date().toLocaleString("en-IN");}catch(e){toast(e.message,"error")}}
+
+  function renderPosCart(){const body=$("posCartBody");clearNode(body);let total=0;state.posCart.forEach((x,i)=>{total+=x.qty*x.rate;const tr=document.createElement("tr");tr.append(td(x.sku,"mono"),td(x.name),td(x.qty),td(money(x.rate)),td(money(x.qty*x.rate)));const ac=td("");const b=document.createElement("button");b.className="btn btn-light btn-sm";b.textContent="Remove";b.onclick=()=>{state.posCart.splice(i,1);renderPosCart()};ac.appendChild(b);tr.appendChild(ac);body.appendChild(tr)});if(!state.posCart.length)rowEmpty(body,6,"Cart is empty");$("posCartTotal").textContent=money(total);}
+  async function posAddItem(){const sku=$("posSku").value.trim(),qty=Number($("posQty").value||1);if(!sku||qty<=0)return toast("Enter a valid SKU and quantity","error");try{const p=await api(`${CONFIG.API_PREFIX}/products/by-sku/${encodeURIComponent(sku)}${qs({firm_id:$("posFirm").value})}`);state.posCart.push({sku:p.sku,name:p.name,qty,rate:Number(p.pos_price??p.selling_price??0),product_id:p.id});$("posSku").value="";renderPosCart();}catch(e){toast(e.message,"error")}}
+  async function posCheckout(){if(!state.posCart.length)return toast("Add at least one item","error");try{const payload={firm_id:$("posFirm").value,session_id:state.posSessionId,customer_phone:$("posCustomerPhone").value.trim()||null,payment_mode:$("posPayMode").value,items:state.posCart.map(x=>({product_id:x.product_id,sku:x.sku,quantity:x.qty}))};const d=await api(`${CONFIG.API_PREFIX}/pos/transactions`,{method:"POST",body:JSON.stringify(payload)});state.posCart=[];renderPosCart();setMessage($("posSuccessMsg"),`Bill ${d.invoice_no||d.id||"created"} completed successfully.`,"success");$("posSuccessMsg").classList.remove("hidden");loadPOS();}catch(e){toast(e.message,"error")}}
+  async function openPosSession(){try{const d=await api(`${CONFIG.API_PREFIX}/pos/sessions/open`,{method:"POST",body:JSON.stringify({firm_id:$("posFirm").value})});state.posSessionId=d.id;$("posSessionBadge").textContent=`Session ${d.session_no||d.id}`;$("posSessionBadge").className="pill pill-green";toast("POS session opened");}catch(e){toast(e.message,"error")}}
+
+  async function simplePost(path,payload,success){try{const d=await api(path,{method:"POST",body:JSON.stringify(payload)});toast(success||"Saved");return d;}catch(e){toast(e.message,"error");return null}}
+
+  async function init() {
+    restoreSession(); $("gstPeriod").value=todayMonth(); renderPosCart();
+    if(state.token && state.user) showDashboard(); else showLogin();
+
+    $("loginForm").addEventListener("submit",login); $("logoutBtn").onclick=()=>{clearSession();showLogin()};
+    $("mobileMenuBtn").onclick=()=>$("sidebar").classList.toggle("open"); $("modalClose").onclick=closeModal; $("modal").addEventListener("click",e=>{if(e.target===$("modal"))closeModal()});
+    $$(".nav-btn[data-tab]").forEach(b=>b.onclick=()=>navigate(b.dataset.tab)); $$("[data-goto]").forEach(b=>b.onclick=()=>navigate(b.dataset.goto));
+    $$(".workspace-switch button").forEach(b=>b.onclick=()=>setFirm(b.dataset.firm)); $$("[data-refresh]").forEach(b=>b.onclick=()=>loadTab(b.dataset.refresh,true));
+    $("btnHealthCheck").onclick=healthCheck; $("btnMorningBriefing").onclick=morningBriefing;
+    $("warehouseModeBtn").onclick=()=>{state.warehouseMode=!state.warehouseMode;document.body.classList.toggle("warehouse-mode",state.warehouseMode);if(state.warehouseMode)navigate("warehouse")};
+
+    $("btnAddProduct").onclick=()=>openProductModal(); $("catalogSearch").addEventListener("input",debounce(loadCatalog,350)); $("inventorySearch").addEventListener("input",debounce(loadInventory,350)); $("inventoryStatusFilter").onchange=loadInventory;
+    $("btnSyncCatalog").onclick=async()=>{const firm=requireFirm("syncing catalog");if(!firm)return;await simplePost(`${CONFIG.API_PREFIX}/marketplaces/catalog-sync`,{firm_id:firm},"Catalog sync queued")};
+    $("btnMarketplaceSync").onclick=async()=>{const firm=requireFirm("syncing marketplaces");if(!firm)return;await simplePost(`${CONFIG.API_PREFIX}/marketplaces/sync`,{firm_id:firm},"Marketplace sync queued")};
+
+    $("btnPosAddItem").onclick=posAddItem; $("posSku").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();posAddItem()}}); $("btnPosCheckout").onclick=posCheckout; $("btnPosOpenSession").onclick=openPosSession;
+    $("btnReco").onclick=async()=>{const firm=requireFirm("reconciling settlement");if(!firm)return;const d=await simplePost(`${CONFIG.API_PREFIX}/accounting/reconcile-settlement`,{firm_id:firm,settlement_ref:$("recoSettlementRef").value.trim(),utr:$("recoUtr").value.trim(),received_amount:Number($("recoAmount").value||0)},"Settlement reconciled");if(d)setMessage($("recoResult"),d.message||"Reconciliation completed","success")};
+    $("btnSentinel").onclick=async()=>{const firm=requireFirm("running listing watch");if(!firm)return;const d=await simplePost(`${CONFIG.API_PREFIX}/sentinel/buy-box-alert`,{firm_id:firm,sku:$("sentinelSku").value.trim(),competitor:$("sentinelCompetitor").value.trim(),competitor_price:Number($("sentinelPrice").value||0)});if(d)setMessage($("sentinelStatus"),d.message||d.recommendation||"Analysis complete")};
+    $("btnNudge").onclick=async()=>{const firm=requireFirm("preparing customer nudge");if(!firm)return;const d=await simplePost(`${CONFIG.API_PREFIX}/crm/whatsapp-nudge`,{firm_id:firm,phone:$("nudgePhone").value.trim(),product:$("nudgeProduct").value.trim()},"Nudge prepared");if(d)setMessage($("nudgeStatus"),d.status||"Queued","success")};
+
+    $("btnMfgRun").onclick=async()=>{const d=await simplePost(`${CONFIG.API_PREFIX}/production/orders`,{firm_id:$("mfgFirm").value,sku:$("mfgSku").value.trim(),planned_quantity:Number($("mfgQty").value||0),batch_code:$("mfgBatch").value.trim()||null},"Production order created");if(d)setMessage($("mfgStatus"),`Production order ${d.order_no||d.id||"created"}. Dates will be assigned by backend rules.`,"success")};
+    $("btnPurchaseSuggestions").onclick=async()=>{const firm=requireFirm("generating purchase suggestions");if(!firm)return;const d=await api(`${CONFIG.API_PREFIX}/procurement/suggestions${qs({firm_id:firm})}`).catch(e=>{toast(e.message,"error");return[]});renderKpiList($("purchaseSuggestionList"),(d.items||d||[]).map(x=>[x.sku,`${num(x.suggested_qty)} • ${x.reason||""}`]))};
+    $("btnStockReconcile").onclick=async()=>{const firm=requireFirm("reconciling stock");if(!firm)return;await simplePost(`${CONFIG.API_PREFIX}/inventory/reconcile`,{firm_id:firm},"Inventory reconciliation completed");loadInventory()};
+
+    $("btnOcr").onclick=async()=>{const d=await api(`${CONFIG.API_PREFIX}/logistics/track/${encodeURIComponent($("ocrAwb").value.trim())}`).catch(e=>{toast(e.message,"error");return null});if(d)setMessage($("ocrResult"),`${d.status||"Tracked"}${d.last_event?` • ${d.last_event}`:""}`)};
+    $("btnSpf").onclick=async()=>{const firm=requireFirm("creating weight claim");if(!firm)return;const d=await simplePost(`${CONFIG.API_PREFIX}/logistics/weight-claims`,{firm_id:firm,awb:$("spfAwb").value.trim(),expected_weight:Number($("spfExpWt").value||0),charged_weight:Number($("spfRecWt").value||0),claim_amount:Number($("spfClaimAmt").value||0)},"Weight claim created");if(d)setMessage($("spfStatus"),`Claim ${d.id||"created"}`,"success")};
+    $("btnRtoQc").onclick=async()=>{const firm=requireFirm("processing RTO QC");if(!firm)return;const d=await simplePost(`${CONFIG.API_PREFIX}/logistics/rto/qc-process`,{firm_id:firm,awb:$("rtoAwb").value.trim(),sku:$("rtoSku").value.trim(),quantity:Number($("rtoQty").value||1),qc_status:$("rtoQcStatus").value},"RTO QC processed");if(d)setMessage($("rtoQcResult"),d.message||"Processed","success")};
+    $("btnWarehouseScan").onclick=warehouseScan; $("scanBarcodeVal").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();warehouseScan()}});
+    $("btnWarehouseSync").onclick=()=>toast("Offline queue sync will use the PWA service worker in the hardening step.");
+
+    $("btnExp").onclick=async()=>{await simplePost(`${CONFIG.API_PREFIX}/accounting/expenses`,{firm_id:$("expFirm").value,account:$("expAccount").value.trim(),amount:Number($("expAmount").value||0),description:$("expDesc").value.trim()},"Expense posted");loadFinance()};
+    $("btnGstr1").onclick=()=>gstSummary("gstr1",$("gstr1Summary")); $("btnGstr3b").onclick=()=>gstSummary("gstr3b",$("gstr3bSummary"));
+    $("btnEinvoice").onclick=()=>complianceAction("e-invoice"); $("btnEway").onclick=()=>complianceAction("e-way");
+    $("btnRunSupervisor").onclick=async()=>{const firm=requireFirm("running Supervisor AI");if(!firm)return;await simplePost(`${CONFIG.API_PREFIX}/ai/runs`,{firm_id:firm,agent:"SUPERVISOR"},"Supervisor run queued");loadAI()};
+    $("btnRagAsk").onclick=ragAsk; $("btnGenImage").onclick=creativeJob;
+    $("btnSeoGenerate").onclick=seoGenerate; $("btnMarkAllRead").onclick=async()=>{await simplePost(`${CONFIG.API_PREFIX}/notifications/mark-all-read`,{},"Notifications marked read");loadNotifications()};
+    $("btnBackup").onclick=async()=>{await simplePost(`${CONFIG.API_PREFIX}/system/backups`,{},"Backup job queued")};
+    $("globalSearch").addEventListener("keydown",e=>{if(e.key==="Enter")globalSearch(e.target.value.trim())});
+
+    ["btnNewQuotation","btnAddB2B","btnAddScheme","btnReceiveStock","btnCreatePO","btnViewBoms","btnImportBank","btnAddCompliance","btnUploadMarketplace"].forEach(id=>{const el=$(id);if(el)el.onclick=()=>toast("This workflow is available through the ERP API; the detailed form can be extended without changing the core data model.")});
+    $("btnGenerateBarcode").onclick=generateBarcode; $("btnPrintBarcode").onclick=printBarcode; $("btnManifestPdf").onclick=uploadManifestPdf; $("btnTallyExport").onclick=downloadTally; $("btnTraceRecord").onclick=recordTraceability;
+  }
+
+  function generateBarcode(){const code=$("toolBarcode").value.trim();if(!code)return toast("Enter SKU/barcode","error");try{if(typeof JsBarcode!=="function")throw new Error("Barcode library did not load");JsBarcode("#barcodeSvg",code,{format:"CODE128",displayValue:true,lineColor:"#111",background:"#fff",margin:8,height:70});$("barcodeCaption").textContent=code;}catch(e){toast(e.message,"error")}}
+  function printBarcode(){const code=$("toolBarcode").value.trim();if(!code)return toast("Generate a barcode first","error");const svg=$("barcodeSvg").outerHTML;const w=window.open("","_blank","width=420,height=320");if(!w)return toast("Allow pop-ups to print labels","error");w.document.write(`<html><head><title>Barcode ${code}</title><style>body{font-family:Arial;text-align:center;padding:18px}svg{max-width:360px}</style></head><body>${svg}<div>${code}</div><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close()}
+  async function uploadManifestPdf(){const file=$("manifestPdf").files?.[0];if(!file)return toast("Select a PDF","error");const fd=new FormData();fd.append("file",file);try{const d=await api(`${CONFIG.API_PREFIX}/orders/upload-manifest-pdf${qs({firm_id:$("manifestFirm").value})}`,{method:"POST",body:fd});setMessage($("manifestResult"),`Status: ${d.status}. Candidates: ${(d.candidates||[]).length}. Imported: ${d.orders_imported||0}. File bytes: ${d.bytes_received||0}.` ,d.status==="PARSED"?"success":"info");}catch(e){setMessage($("manifestResult"),e.message,"error")}}
+  async function downloadTally(){const firm=$("tallyFirm").value;try{const d=await fetch(`${CONFIG.API_BASE}${CONFIG.API_PREFIX}/accounting/tally/export${qs({firm_id:firm,from_date:$("tallyFrom").value,to_date:$("tallyTo").value})}`,{headers:{Authorization:`Bearer ${state.token}`,Accept:"application/xml"}});if(!d.ok)throw new Error(await d.text());const blob=await d.blob();const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`${firm.toLowerCase()}_tally_export.xml`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast("Tally XML exported");}catch(e){toast(e.message||"Tally export failed","error")}}
+  async function recordTraceability(){const firm=$("traceFirm").value,batch=$("traceBatch").value.trim(),sku=$("traceSku").value.trim(),qty=Number($("traceQty").value||0);if(!batch||!sku||qty<=0)return toast("Enter batch, SKU and quantity","error");try{const d=await simplePost(`${CONFIG.API_PREFIX}/traceability/record`,{firm_id:firm,batch_no:batch,sku,quantity:qty},"Traceability recorded");if(d)setMessage($("traceResult"),`Traceability record ${d.id||"saved"}`,"success")}catch(e){setMessage($("traceResult"),e.message,"error")}}
+  async function warehouseScan(){const firm=requireFirm("scanning warehouse stock");if(!firm)return;const code=$("scanBarcodeVal").value.trim();if(!code)return;try{const d=await api(`${CONFIG.API_PREFIX}/warehouse/scan-barcode`,{method:"POST",body:JSON.stringify({firm_id:firm,barcode:code})});setMessage($("scanResultBox"),`${d.product_name||d.sku||code} • Batch ${d.batch_no||"—"} • Available ${num(d.available)}${d.fefo_batch?` • FEFO: ${d.fefo_batch}`:""}`,"success");$("scanBarcodeVal").value="";$("scanBarcodeVal").focus();}catch(e){setMessage($("scanResultBox"),e.message,"error")}}
+  async function gstSummary(kind,target){try{const d=await api(`${CONFIG.API_PREFIX}/accounting/gst/${kind}-summary${qs({firm_id:$("gstFirm").value,tax_period:$("gstPeriod").value})}`);setMessage(target,`${kind.toUpperCase()}: Taxable ${money(d.taxable_value)} • Tax ${money(d.tax_total||d.total_tax)}`)}catch(e){setMessage(target,e.message,"error")}}
+  async function complianceAction(kind){const invoice=$("gstInvoiceId").value.trim();if(!invoice)return toast("Enter invoice ID","error");const d=await simplePost(`${CONFIG.API_PREFIX}/accounting/${kind}`,{firm_id:$("gstFirm").value,invoice_id:invoice},`${kind} request prepared`);if(d)setMessage($("gstActionResult"),d.status||d.message||"Request prepared","success")}
+  async function ragAsk(){const q=$("ragQuestion").value.trim();if(!q)return;try{const d=await api(`${CONFIG.API_PREFIX}/ai/rag/search`,{method:"POST",body:JSON.stringify({query:q,firm_id:state.selectedFirm==="ALL"?null:state.selectedFirm})});const box=$("ragAnswer");clearNode(box);const p=document.createElement("p");p.textContent=d.answer||"No synthesized answer returned.";box.appendChild(p);(d.sources||[]).forEach(s=>{const x=document.createElement("div");x.className="small muted";x.textContent=`Source: ${s.title||s.document_id||"Knowledge base"}`;box.appendChild(x)})}catch(e){setMessage($("ragAnswer"),e.message,"error")}}
+  async function creativeJob(){const firm=requireFirm("creating AI visual");if(!firm)return;const d=await simplePost(`${CONFIG.API_PREFIX}/ai/creative-jobs`,{firm_id:firm,brand:$("studioBrand").value,product:$("studioProduct").value.trim(),visual_type:$("studioVisualType").value,notes:$("studioNotes").value.trim()},"Creative job queued");if(d)setMessage($("imagePreviewBox"),`Job ${d.id||"queued"}. Output URL will appear after the AI worker completes it.`,"success")}
+  async function seoGenerate(){const firm=requireFirm("generating SEO draft");if(!firm)return;try{const d=await api(`${CONFIG.API_PREFIX}/seo/pages/generate`,{method:"POST",body:JSON.stringify({firm_id:firm,product:$("seoProd").value.trim(),city:$("seoCity").value.trim()})});$("seoResult").textContent=JSON.stringify(d,null,2)}catch(e){$("seoResult").textContent=e.message}}
+  async function globalSearch(query){if(!query)return;try{const d=await api(`${CONFIG.API_PREFIX}/search${qs({q:query,firm_id:state.selectedFirm==="ALL"?"":state.selectedFirm})}`);const wrap=document.createElement("div");(d.items||d||[]).slice(0,20).forEach(x=>{const r=document.createElement("div");r.className="kpi-row";const a=document.createElement("span");a.textContent=x.title||x.name||x.id;const b=document.createElement("b");b.textContent=x.type||"Result";r.append(a,b);wrap.appendChild(r)});if(!wrap.children.length){const e=document.createElement("div");e.className="empty";e.textContent="No results";wrap.appendChild(e)}openModal(`Search: ${query}`,wrap,[{label:"Close",className:"btn btn-light",onClick:closeModal}])}catch(e){toast(e.message,"error")}}
+  function debounce(fn,ms){let t;return(...args)=>{clearTimeout(t);t=setTimeout(()=>fn(...args),ms)}}
+
+  document.addEventListener("DOMContentLoaded", init);
+})();
+</script>
+</body>
+</html>
