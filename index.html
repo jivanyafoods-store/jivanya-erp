@@ -2385,7 +2385,7 @@ async function submitTitanOrder(customerName, customerPhone, customerCity, cartI
       state: "UP"
     },
     items: cartItems.map(item => ({
-      sku: item.sku,
+      sku: item.product_id, // <-- Yahan gadbadi thi, ise theek kar diya gaya hai
       quantity: Number(item.qty || 1)
     }))
   };
@@ -2399,14 +2399,13 @@ async function submitTitanOrder(customerName, customerPhone, customerCity, cartI
 
     const data = await res.json();
     if (res.ok) {
-      alert(`🎉 Order Confirm ho gaya!\nOrder ID: ${data.order_number}\nTotal: ₹${data.grand_total}`);
+      console.log(`🎉 ERP Sync Success: ${data.order_number}`);
       return data;
     } else {
-      alert("Order issue: " + (data.detail || "Server error"));
+      console.warn("Order issue: " + (data.detail || "Server error"));
     }
   } catch (err) {
     console.error("ERP connection error:", err);
-    alert("Server connect nahi ho paya, kripya dobara koshish karein.");
   }
 }
 </script>
