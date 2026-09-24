@@ -43,7 +43,11 @@ from supabase import create_client, Client
 
 APP_ENV = os.getenv("APP_ENV", "production")
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip()
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "").strip()
+SUPABASE_KEY = (
+    os.getenv("SUPABASE_KEY")
+    or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+    or ""
+).strip()
 AI_MODE = os.getenv("AI_MODE", "free_local").strip().lower()
 AI_WEB_SEARCH_ENABLED = os.getenv("AI_WEB_SEARCH_ENABLED", "true").lower() == "true"
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
@@ -74,6 +78,10 @@ app.add_middleware(
 PUBLIC_API_PATHS = {"/api/v1/auth/login", "/api/v1/health", "/api/v1/ready", "/api/v1/orders/checkout"}
 @app.middleware("http")
 async def require_bearer_for_api(request: Request, call_next):
+    # Browser CORS preflight requests must pass before bearer-token validation.
+    if request.method == "OPTIONS":
+        return await call_next(request)
+
     # Health/login remain public. All business API calls require the Supabase Auth access token.
     if request.url.path.startswith("/api/v1/") and request.url.path not in PUBLIC_API_PATHS:
         auth_header = request.headers.get("Authorization", "")
@@ -1741,9 +1749,3 @@ def root():
         "paid_ai_required": False,
         "time": now_iso(),
     }
-@app.post("/orders/checkout")
-@app.post("/api/v1/orders/checkout")
-def api_checkout(payload: CheckoutRequest):
-    # Website ya storefront se aane wale orders ko process karega
-    order = place_order(payload, payload.channel or "WEBSITE")
-    return order
