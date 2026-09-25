@@ -27,7 +27,7 @@
     "@context": "https://schema.org",
     "@type": "FoodEstablishment",
     "name": "Jivanya Foods",
-    "image": "https://jivanyafoods-store.github.io/jivanya-images/logo.png",
+    "image": "https://raw.githubusercontent.com/jivanyafoods-store/jivanya-images/main/logo.png",
     "@id": "https://jivanyafoods-store.github.io/jivanyafoods/",
     "url": "https://jivanyafoods-store.github.io/jivanyafoods/",
     "telephone": "+91-9690002403",
@@ -148,12 +148,12 @@
       <!-- Store Logo -->
       <div class="flex items-center cursor-pointer shrink-0" onclick="selectCategory('ALL')" title="Jivanya Foods Home">
         <img id="storeLogo" 
-             src="https://jivanyafoods-store.github.io/jivanya-images/logo.png" 
+             src="https://raw.githubusercontent.com/jivanyafoods-store/jivanya-images/main/logo.png" 
              alt="Jivanya Foods" 
              width="44" height="44"
              loading="eager" 
              class="h-10 sm:h-11 w-auto object-contain hover:opacity-95 transition" 
-             onerror="this.src='https://jivanyafoods-store.github.io/jivanya-images/logo.png'" />
+             onerror="this.src='https://raw.githubusercontent.com/jivanyafoods-store/jivanya-images/main/logo.png'" />
       </div>
 
       <!-- Action Buttons + Search Bar + Basket -->
@@ -307,7 +307,7 @@
     <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
       <div>
         <div class="flex items-center gap-2 mb-2">
-          <img src="https://jivanyafoods-store.github.io/jivanya-images/logo.png" alt="Jivanya Foods" class="h-8 w-auto object-contain rounded" onerror="this.style.display='none'" />
+          <img src="https://raw.githubusercontent.com/jivanyafoods-store/jivanya-images/main/logo.png" alt="Jivanya Foods" class="h-8 w-auto object-contain rounded" onerror="this.style.display='none'" />
           <h3 class="font-bold text-gray-900 text-sm">Jivanya Foods</h3>
         </div>
         <p class="text-gray-500 text-[11px] leading-relaxed">
@@ -926,7 +926,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     }
 
     function resolveProductImage(prod) {
-      if (!prod) return "https://jivanyafoods-store.github.io/jivanyafoods/logo.png";
+      if (!prod) return "https://raw.githubusercontent.com/jivanyafoods-store/jivanya-images/main/logo.png";
       let raw = "";
       for (const key of Object.keys(prod)) {
         const k = key.trim().toLowerCase();
@@ -936,7 +936,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         }
       }
       const resolved = cleanImageUrl(raw);
-      return resolved || "https://jivanyafoods-store.github.io/jivanyafoods/logo.png";
+      return resolved || "https://raw.githubusercontent.com/jivanyafoods-store/jivanya-images/main/logo.png";
     }
 
     function getProductImages(prod) {
@@ -1263,7 +1263,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       const first = variants[0] || { size: 'Pack', price: 0, mrp: 0, floorPrice: 0 };
       const safeId = (prod.ProductID || 'P').replace(/[^a-zA-Z0-9]/g, '');
       const images = getProductImages(prod);
-      const mainImg = images[0] || "https://jivanyafoods-store.github.io/jivanyafoods/logo.png";
+      const mainImg = images[0] || "https://raw.githubusercontent.com/jivanyafoods-store/jivanya-images/main/logo.png";
       const isOutOfStock = (prod.InStock || "YES").toUpperCase() === "NO";
       
       const discountPercent = (first.mrp > first.price && first.mrp > 0)
@@ -1279,7 +1279,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                  alt="${prod.ProductName}" 
                  loading="lazy" 
                  decoding="async" 
-                 onerror="this.src='https://jivanyafoods-store.github.io/jivanyafoods/logo.png'" 
+                 onerror="this.src='https://raw.githubusercontent.com/jivanyafoods-store/jivanya-images/main/logo.png'" 
                  style="image-rendering: -webkit-optimize-contrast;"
                  class="w-full h-full object-contain mx-auto transition-transform duration-300 group-hover:scale-105" />
             
@@ -1458,12 +1458,12 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       currentDetailVariant = variants[0] || { size: 'Pack', price: 0, mrp: 0, floorPrice: 0 };
 
       const images = getProductImages(prod);
-      const mainImg = images[0] || "https://jivanyafoods-store.github.io/jivanyafoods/logo.png";
+      const mainImg = images[0] || "https://raw.githubusercontent.com/jivanyafoods-store/jivanya-images/main/logo.png";
       
       const imgEl = document.getElementById('detailImg');
       if (imgEl) {
         imgEl.src = mainImg;
-        imgEl.onerror = () => { imgEl.src = "https://jivanyafoods-store.github.io/jivanyafoods/logo.png"; };
+        imgEl.onerror = () => { imgEl.src = "https://raw.githubusercontent.com/jivanyafoods-store/jivanya-images/main/logo.png"; };
       }
 
       let thumbBox = document.getElementById('detailImgThumbs');
